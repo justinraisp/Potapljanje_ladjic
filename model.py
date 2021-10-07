@@ -1,5 +1,5 @@
 import random
-
+import json
 
 plosca = [[]]
 
@@ -18,6 +18,11 @@ pozicija_ladij = [[]]
 abeceda = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 
+
+class Uporabnik:
+    def __init__(self, Ime, Priimek):
+        Ime = self.Ime
+        Priimek = self.Priimek
 
 def preveri_plosco_in_postavi_ladjo(zacetna_vrst, koncna_vrst, zacetni_stol, koncni_stol):
     # Preveri, ce lahko tam postavi ladjo 
