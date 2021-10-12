@@ -7,7 +7,7 @@ velikost_plosce = 10
 
 stevilo_ladij = 5
 
-st_preostalih_strelov = 50
+st_preostalih_strelov = 40
 
 konec_igre = False
 
@@ -17,12 +17,14 @@ pozicija_ladij = [[]]
 
 abeceda = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
+datoteka_s_stanjem = 'stanje.json'
 
 
 class Uporabnik:
     def __init__(self, Ime, Priimek):
         Ime = self.Ime
         Priimek = self.Priimek
+
 
 def preveri_plosco_in_postavi_ladjo(zacetna_vrst, koncna_vrst, zacetni_stol, koncni_stol):
     # Preveri, ce lahko tam postavi ladjo 
@@ -100,7 +102,7 @@ def ustvari_plosco():
         if poskusi_postavit_ladjo(nakljucna_vrstica, nakljucni_stolpec, smer, velikost_ladje[indeks]):
             stevilo_postavljenih_ladij += 1
             indeks += 1
-    
+    return plosca
 
 def izpisi_plosco():
     # Izpise plosco z vrsticami A-J in stolpci 0-9
@@ -187,7 +189,7 @@ def preveri_potopljeno_ladjo(vrstica, stolpec):
                 for stolp in range(zacetni_stolpec, koncni_stolpec):
                     if plosca[vrst][stolp] != 'X':
                         return False
-    return True
+        return True
 
 
 def izstreli_strel():
@@ -246,6 +248,47 @@ def main():
         print('---------------------------')
         print('')
         preveri_konec_igre()
+
+
+class Igra:
+
+    def __init__(self, plosca=[[]]):
+        self.plosca = plosca
+
+
+
+
+
+    def ustvari_plosco(self):
+        # Ustvari 10x10 plosco in nakljucno postavi 
+        # lajde razlicnih velikosti v razlicne smeri
+        global plosca
+        global velikost_plosce
+        global stevilo_ladij
+        global pozicija_ladij
+
+        plosca = []
+        for vrstica in range(velikost_plosce):
+            vrstica = []
+            for stolpec in range(velikost_plosce):
+                vrstica.append('.')
+            plosca.append(vrstica)
+
+        stevilo_postavljenih_ladij = 0
+        pozicija_ladij = []
+
+        indeks = 0
+        while stevilo_postavljenih_ladij != stevilo_ladij:
+            nakljucna_vrstica = random.randint(0, velikost_plosce - 1)
+            nakljucni_stolpec = random.randint(0, velikost_plosce - 1)
+            smer = random.choice(['levo', 'desno', 'gor', 'dol'])
+            velikost_ladje = [2, 3, 3, 4, 5]
+            if poskusi_postavit_ladjo(nakljucna_vrstica, nakljucni_stolpec, smer, velikost_ladje[indeks]):
+                stevilo_postavljenih_ladij += 1
+                indeks += 1
+        self.plosca = plosca    
+        
+
 
 if __name__ == '__main__':
     main()

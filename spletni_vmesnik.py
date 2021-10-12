@@ -1,11 +1,15 @@
 import bottle
 from bottle_login import LoginPlugin
 import model
+from bottle import Bottle
 
-SKRIVNOST = 'moja skrivnost'
 
+app = Bottle()
+app.config['SECRET_KEY'] = 'moja skrivnost'
 
-@bottle.route('/')
+login = app.install(LoginPlugin())
+
+@bottle.get('/')
 def index():
     return bottle.template('index.tpl')
 
@@ -19,22 +23,117 @@ def nova_igra():
 @bottle.get('/igra/')
 def pokazi_igro():
     id_igre = int(bottle.request.get_cookie('idigre', secret=SKRIVNOST).split('e')[1])
+    return bottle.template('igra.tpl')
+
 
 @bottle.post('/igra/')
 def ugibaj():
     id_igre = int(bottle.request.get_cookie('idigre', secret=SKRIVNOST).split('e')[1])
-    crka = bottle.request.forms.getunicode('crka')    
+    ugib = bottle.request.forms.getunicode('ugib')    
     bottle.redirect('/igra/')
 
-@bottle.route('/static/<filename>')
-def server_static(filename):
-    return bottle.static_file(filename, root='./')
+@bottle.get('/img/<picture>')
+def serve_pictures(picture):
+    return bottle.static_file(picture, root='img')
+
+
+@bottle.route('/registracija/')
+def registracija():
+    return bottle.template('registracija.tpl')
+
+
+@bottle.route('/prijava/')
+def prijava():
+    return bottle.template('prijava.tpl')
+
+usernames = ["username", "user"]
+passwords = ["password", "pass"]
+def preveri_prijavo(username, password):
+    if username in usernames and password in passwords:
+        return True
+    else:
+        return False
+
+
+@bottle.route('/prijava/', method='POST') 
+def do_login():
+    username = bottle.request.forms.get('username')
+    password = bottle.request.forms.get('password')
+    if preveri_prijavo(username, password):
+        bottle.response.set_cookie("account", username, secret='some-secret-key')
+        return bottle.template('Pozdravljen {{name}}. Dobrodosel nazaj.', name=username)
+    else:
+        return "<p>Your log in attempt has failed</p>"
 
 
 
 
 
 
+
+
+
+
+#@bottle.get('/prijava/')
+#def prijava():
+    #Implement login (you can check passwords here or etc)
+#    user_id = int(bottle.request.GET.get('user_id'))
+#    login.login_user(user_id)
+#    return bottle.redirect('/')
+
+
+
+
+
+
+#@login.load_user
+#def load_user_by_id(user_id):
+    
+
+
+# Some application views
+
+#@app.route('/')
+#def index():
+#    current_user = login.get_user()
+#    return current_user.name
+
+#@app.route('/signout')
+#def signout():
+    # Implement logout
+#    login.logout_user()
+#    return redirect('/')
+
+
+
+#@route('/', method='POST')
+#def index():
+#    return '<h1>index</h1>'
+
+
+#@error(404)
+#def error404(error):
+    #return '<h1>You have experienced a 404</h1>'
+
+#@error(405)
+#def error405(error):
+    #return '<h1>This method is not allowed</h1>'
+
+#@error(500)
+#def error500(error):
+    #return '<h1>Something went wrong</h1>'
+
+
+#@route('/')
+#def index():
+#    return {'name' : 'jsonData', 'myList': [1,2,3,4,5]}
+
+
+#@route('/querytest')
+#def querytest():
+#    p1 = request.query.p1
+#    p2 = request.query.p2
+#    return '<h1>The value of p1 is: ' + p1 + ' and the value of p2 is: ' + p2 + '</h1>'
 
 
 
