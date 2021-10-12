@@ -16,3 +16,7 @@
   <form action="/prijava/" method="get">
     <button type="submit">Prijava</button>
   </form>
+
+  <form action="/nova-igra/" method="get">
+    <button type="submit">Nova igra</button>
+  </form>

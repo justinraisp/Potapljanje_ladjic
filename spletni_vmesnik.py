@@ -13,13 +13,6 @@ login = app.install(LoginPlugin())
 def index():
     return bottle.template('index.tpl')
 
-@bottle.post('/nova-igra/')
-def nova_igra():
-    id_igre = model.main()
-    bottle.response.set_cookie('idigre', 'idigre{}'.format(id_igre), path='/', secret=SKRIVNOST)
-    bottle.redirect('/igra/')
-
-
 @bottle.get('/igra/')
 def pokazi_igro():
     id_igre = int(bottle.request.get_cookie('idigre', secret=SKRIVNOST).split('e')[1])
@@ -45,6 +38,12 @@ def registracija():
 @bottle.route('/prijava/')
 def prijava():
     return bottle.template('prijava.tpl')
+
+
+@bottle.route('/nova-igra/')
+def nova_igra():
+    return bottle.template('igra.tpl')
+
 
 usernames = ["username", "user"]
 passwords = ["password", "pass"]
