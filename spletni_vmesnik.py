@@ -2,12 +2,14 @@ import bottle
 from bottle_login import LoginPlugin
 import model
 from bottle import Bottle
+import json
 
+SKRIVNOST = 'moja skrivnost'
+datoteka_s_stanjem = 'stanje.json'
 
-app = Bottle()
-app.config['SECRET_KEY'] = 'moja skrivnost'
+potapljanje_ladjic = model.Potapljanje_ladjic(datoteka_s_stanjem)
+potapljanje_ladjic.zapisi_igre_v_datoteko()
 
-login = app.install(LoginPlugin())
 
 @bottle.get('/')
 def index():
@@ -16,13 +18,15 @@ def index():
 @bottle.get('/igra/')
 def pokazi_igro():
     id_igre = int(bottle.request.get_cookie('idigre', secret=SKRIVNOST).split('e')[1])
-    return bottle.template('igra.tpl')
+    igra = potapljanje_ladjic.igre[id_igre]
+    return bottle.template('igra.tpl', igra=model.nova_igra())
 
 
 @bottle.post('/igra/')
 def ugibaj():
     id_igre = int(bottle.request.get_cookie('idigre', secret=SKRIVNOST).split('e')[1])
-    ugib = bottle.request.forms.getunicode('ugib')    
+    ugib = bottle.request.forms.getunicode('ugib')
+    potapljanje_ladjic.ugibaj(id_igre)    
     bottle.redirect('/igra/')
 
 @bottle.get('/img/<picture>')
@@ -42,27 +46,29 @@ def prijava():
 
 @bottle.route('/nova-igra/')
 def nova_igra():
-    return bottle.template('igra.tpl')
+    id_igre = potapljanje_ladjic.nova_igra()
+    bottle.response.set_cookie('idigre', 'idigre{}'.format(id_igre), path='/', secret=SKRIVNOST)
+    bottle.redirect('/igra/')    
 
 
-usernames = ["username", "user"]
-passwords = ["password", "pass"]
-def preveri_prijavo(username, password):
-    if username in usernames and password in passwords:
-        return True
-    else:
-        return False
+#usernames = ["username", "user"]
+#passwords = ["password", "pass"]
+#def preveri_prijavo(username, password):
+#    if username in usernames and password in passwords:
+#        return True
+#    else:
+#        return False
 
 
-@bottle.route('/prijava/', method='POST') 
-def do_login():
-    username = bottle.request.forms.get('username')
-    password = bottle.request.forms.get('password')
-    if preveri_prijavo(username, password):
-        bottle.response.set_cookie("account", username, secret='some-secret-key')
-        return bottle.template('Pozdravljen {{name}}. Dobrodosel nazaj.', name=username)
-    else:
-        return "<p>Your log in attempt has failed</p>"
+#@bottle.route('/prijava/', method='POST') 
+#def do_login():
+#    username = bottle.request.forms.get('username')
+#    password = bottle.request.forms.get('password')
+#    if preveri_prijavo(username, password):
+#        bottle.response.set_cookie("account", username, secret='some-secret-key')
+#        return bottle.template('Pozdravljen {{name}}. Dobrodosel nazaj.', name=username)
+#    else:
+#        return "<p>Your log in attempt has failed</p>"
 
 
 

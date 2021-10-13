@@ -12,7 +12,9 @@ abeceda = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 datoteka_s_stanjem = 'stanje.json'
 
-
+ZACETEK = 'Z'
+ZMAGA = 'W'
+PORAZ = 'L'
 
 
 
@@ -64,7 +66,6 @@ class Igra:
     def izpisi_plosco(self):
         # Izpise plosco z vrsticami A-J in stolpci 0-9
         global abeceda
-        global plosca
         debug_mode = True
 
         abeceda = abeceda[0: len(self.plosca) + 1]
@@ -86,7 +87,7 @@ class Igra:
                     print(self.plosca[vrstica][stolpec], end= ' ')
                     x += str(self.plosca[vrstica][stolpec])
             print('')
-            x += ''
+            x += ' , '
 
         print('  ', end= ' ')
         x += '  '
@@ -257,3 +258,44 @@ class Igra:
 def nova_igra():
     return Igra()
 
+class Potapljanje_ladjic:
+
+    def __init__(self, datoteka_s_stanjem):
+        self.igre = {}
+        self.datoteka_s_stanjem = datoteka_s_stanjem
+
+    
+    def prost_id_igre(self):
+        if len(self.igre) == 0:
+            return 0
+        else:
+            return max(self.igre.keys()) + 1
+    
+    def ugibaj(self, id_igre):
+        self.nalozi_igre_iz_datoteke()
+        igra = self.igre[id_igre]
+        stanje = igra.izstreli_strel()
+        self.igre[id_igre] = (igra, stanje)
+        self.zapisi_igre_v_datoteko()
+
+
+    def nalozi_igre_iz_datoteke(self):
+        with open(self.datoteka_s_stanjem, 'r', encoding='utf-8') as f:
+            igre = json.load(f)
+            self.igre = {int(id_igre[0]): (Igra())
+                        for id_igre in igre.items()}
+
+    def zapisi_igre_v_datoteko(self):
+        with open(self.datoteka_s_stanjem, 'w', encoding='utf-8') as f:
+            igre = {id_igre: (igra.plosca,stanje) 
+                        for id_igre, (igra, stanje) in self.igre.items()}
+            json.dump(igre, f)
+
+
+    def nova_igra(self):
+        self.nalozi_igre_iz_datoteke()
+        id_igre = self.prost_id_igre()
+        igra = nova_igra()
+        self.igre[id_igre] = (igra, ZACETEK)
+        self.zapisi_igre_v_datoteko()
+        return id_igre
