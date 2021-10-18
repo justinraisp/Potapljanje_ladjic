@@ -29,7 +29,7 @@ class Igra:
 
     def __init__(self):
         self.plosca = []
-        self.pozicija_ladij = [[]]
+        self.pozicija_ladij = []
         self.st_preostalih_strelov = 40
         self.st_potopljenih_ladij = 0
 
@@ -46,10 +46,10 @@ class Igra:
             for stolpec in range(velikost_plosce):
                 vrstica.append('.')
             self.plosca.append(vrstica)
+            #print(self.plosca)
 
         stevilo_postavljenih_ladij = 0
-        pozicija_ladij = []
-
+        #print(self.plosca)
         indeks = 0
         while stevilo_postavljenih_ladij != stevilo_ladij:
             nakljucna_vrstica = random.randint(0, velikost_plosce - 1)
@@ -58,7 +58,8 @@ class Igra:
             velikost_ladje = [2, 3, 3, 4, 5]
             if self.poskusi_postavit_ladjo(nakljucna_vrstica, nakljucni_stolpec, smer, velikost_ladje[indeks]):
                 stevilo_postavljenih_ladij += 1
-                indeks += 1    
+                indeks += 1 
+                   
         
 
 
@@ -67,57 +68,61 @@ class Igra:
         # Izpise plosco z vrsticami A-J in stolpci 0-9
         global abeceda
         debug_mode = True
-
-        abeceda = abeceda[0: len(self.plosca) + 1]
+        abeceda = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        #abeceda = abeceda[0: len(self.plosca) + 1]
         x = ''
 
 
         for vrstica in range(len(self.plosca)):
-            print(abeceda[vrstica], end=') ')
+            #print(abeceda[vrstica], end=') ')
             x += str(abeceda[vrstica])
             for stolpec in range(len(self.plosca[vrstica])):
                 if self.plosca[vrstica][stolpec] == 'O':
                     if debug_mode:
-                        print('.', end=' ')
+                        #print('.', end=' ')
                         x += '.'
                     else:
-                        print('.', end=' ')
+                        #print('.', end=' ')
                         x += '.'
                 else:
-                    print(self.plosca[vrstica][stolpec], end= ' ')
+                    #print(self.plosca[vrstica][stolpec], end= ' ')
                     x += str(self.plosca[vrstica][stolpec])
-            print('')
-            x += ' , '
+            #print('')
+            x += ' , ' #+ '\n'
 
-        print('  ', end= ' ')
+        #print('  ', end= ' ')
         x += '  '
 
         for i in range(len(self.plosca[0])):
-            print(str(i), end=' ')
+            #print(str(i), end=' ')
             x+= str(i)
-        print('')
+        #print('')
         return x
 
 
-    def izstreli_strel(self):
+    def izstreli_strel(self, ugib):
+        if self.sprejmi_veljavni_strel(ugib):
+            lokacija = ugib.upper()
+            vrstica = abeceda.find(lokacija[0])
+            stolpec = int(lokacija[1])
+            print("")
+            print("----------------------------")
 
-        vrstica, stolpec = self.sprejmi_veljavni_strel()
-        print("")
-        print("----------------------------")
+            if self.plosca[vrstica][stolpec] == ".":
+                print("Zgresen strel, nobena ladja ni bila zadeta")
+                self.plosca[vrstica][stolpec] = "#"
+            elif self.plosca[vrstica][stolpec] == "O":
+                print("Zadetek!", end=" ")
+                self.plosca[vrstica][stolpec] = "X"
+                if self.preveri_potopljeno_ladjo(vrstica, stolpec):
+                    print("Ladja je potopljena!")
+                    self.st_potopljenih_ladij += 1
+                else:
+                    print("Ladja je bila zadeta!")
 
-        if self.plosca[vrstica][stolpec] == ".":
-            print("Zgresen strel, nobena ladja ni bila zadeta")
-            self.plosca[vrstica][stolpec] = "#"
-        elif self.plosca[vrstica][stolpec] == "O":
-            print("Zadetek!", end=" ")
-            self.plosca[vrstica][stolpec] = "X"
-            if self.preveri_potopljeno_ladjo(vrstica, stolpec):
-                print("Ladja je potopljena!")
-                self.st_potopljenih_ladij += 1
-            else:
-                print("Ladja je bila zadeta!")
-
-        self.st_preostalih_strelov -= 1
+            self.st_preostalih_strelov -= 1
+        else:
+            return None
 
 
 
@@ -189,42 +194,40 @@ class Igra:
 
 
 
-    def sprejmi_veljavni_strel(self):
+    def sprejmi_veljavni_strel(self, lokacija):
         # Pridobi veljavno vrstico in stolpec za strel
         je_veljavno = False
         vrstica = -1
         stolpec = -1
+        #lokacija = input('Vnesi vrstico (A-J) in stolpec (0-9), primer B4: ')
+        lokacija = str(lokacija).upper()
+        if len(lokacija) <= 0 or len(lokacija) > 2:
+            print('Napaka: Vnesi eno vrstico in en stolpec kot B4') 
+            return False
+        vrstica = lokacija[0]
+        stolpec = lokacija[1]
 
-        while not je_veljavno:
-            lokacija = input('Vnesi vrstico (A-J) in stolpec (0-9), primer B4: ')
-            lokacija = lokacija.upper()
-            if len(lokacija) <= 0 or len(lokacija) > 2:
-                print('Napaka: Vnesi eno vrstico in en stolpec kot B4') 
-                continue
-            vrstica = lokacija[0]
-            stolpec = lokacija[1]
+        if not vrstica.isalpha() or not stolpec.isnumeric():
+            print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
+            return je_veljavno
+        vrstica = abeceda.find(vrstica)
 
-            if not vrstica.isalpha() or not stolpec.isnumeric():
-                print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
-                continue
-            vrstica = abeceda.find(vrstica)
+        if not (-1 < vrstica < velikost_plosce):
+            print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
+            return je_veljavno
+        stolpec = int(stolpec)
 
-            if not (-1 < vrstica < velikost_plosce):
-                print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
-                continue
-            stolpec = int(stolpec)
+        if not (-1 < stolpec < velikost_plosce):
+            print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
+            return je_veljavno
 
-            if not (-1 < stolpec < velikost_plosce):
-                print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
-                continue
+        if self.plosca[vrstica][stolpec] == '#' or self.plosca[vrstica][stolpec] == 'X':
+            print('Na to pozicijo je ze bil ustreljen strel, izberi drugo pozicijo')
+            return je_veljavno
 
-            if self.plosca[vrstica][stolpec] == '#' or self.plosca[vrstica][stolpec] == 'X':
-                print('Na to pozicijo je ze bil ustreljen strel, izberi drugo pozicijo')
-                continue
-            if self.plosca[vrstica][stolpec] == '.' or self.plosca[vrstica][stolpec] == 'O':
-                je_veljavno = True
-
-        return vrstica, stolpec
+        if self.plosca[vrstica][stolpec] == '.' or self.plosca[vrstica][stolpec] == 'O':
+            je_veljavno = True
+        return je_veljavno
 
 
 
@@ -256,7 +259,10 @@ class Igra:
             self.preveri_konec_igre()
 
 def nova_igra():
-    return Igra()
+    igra = Igra()
+    igra.ustvari_plosco()
+    igra.izpisi_plosco()
+    return igra
 
 class Potapljanje_ladjic:
 
@@ -271,11 +277,12 @@ class Potapljanje_ladjic:
         else:
             return max(self.igre.keys()) + 1
     
-    def ugibaj(self, id_igre):
+    def ugibaj(self, id_igre, ugib):
         self.nalozi_igre_iz_datoteke()
         igra = self.igre[id_igre]
-        stanje = igra.izstreli_strel()
-        self.igre[id_igre] = (igra, stanje)
+        print(igra.__dict__)
+        poskus = igra.izstreli_strel(ugib)
+        self.igre[id_igre] = (igra, poskus)
         self.zapisi_igre_v_datoteko()
 
 
@@ -287,7 +294,7 @@ class Potapljanje_ladjic:
 
     def zapisi_igre_v_datoteko(self):
         with open(self.datoteka_s_stanjem, 'w', encoding='utf-8') as f:
-            igre = {id_igre: (igra.plosca,stanje) 
+            igre = {id_igre: (igra.__dict__,stanje) 
                         for id_igre, (igra, stanje) in self.igre.items()}
             json.dump(igre, f)
 
@@ -299,3 +306,4 @@ class Potapljanje_ladjic:
         self.igre[id_igre] = (igra, ZACETEK)
         self.zapisi_igre_v_datoteko()
         return id_igre
+nova_igra()

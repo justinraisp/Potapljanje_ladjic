@@ -25,8 +25,8 @@ def pokazi_igro():
 @bottle.post('/igra/')
 def ugibaj():
     id_igre = int(bottle.request.get_cookie('idigre', secret=SKRIVNOST).split('e')[1])
-    ugib = bottle.request.forms.getunicode('ugib')
-    potapljanje_ladjic.ugibaj(id_igre)    
+    lokacija = bottle.request.forms.getunicode('lokacija')
+    potapljanje_ladjic.ugibaj(id_igre, lokacija)    
     bottle.redirect('/igra/')
 
 @bottle.get('/img/<picture>')

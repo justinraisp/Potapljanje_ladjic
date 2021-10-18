@@ -5,7 +5,7 @@
 <table>
 <tr>
     <td>
-        <h2>{{igra.izpisi_plosco().split(',')}}</h2>
+        <h2>{{igra.izpisi_plosco()}}</h2>
     </td>
 </tr>
 
