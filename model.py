@@ -25,13 +25,13 @@ class Uporabnik:
 
 
 
-class Igra:
+class Igra():
 
-    def __init__(self):
-        self.plosca = []
-        self.pozicija_ladij = []
-        self.st_preostalih_strelov = 40
-        self.st_potopljenih_ladij = 0
+    def __init__(self, plosca=[], pozicija_ladij=[], st_preostalih_strelov=40, st_potopljenih_ladij=0):
+        self.plosca = plosca
+        self.pozicija_ladij = pozicija_ladij
+        self.st_preostalih_strelov = st_preostalih_strelov
+        self.st_potopljenih_ladij = st_potopljenih_ladij
 
 
 
@@ -68,7 +68,7 @@ class Igra:
         # Izpise plosco z vrsticami A-J in stolpci 0-9
         global abeceda
         debug_mode = True
-        abeceda = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        abeceda = 'ABCDEFGHIJKLMNOP'
         #abeceda = abeceda[0: len(self.plosca) + 1]
         x = ''
 
@@ -259,7 +259,7 @@ class Igra:
             self.preveri_konec_igre()
 
 def nova_igra():
-    igra = Igra()
+    igra = Igra([],[],40,0)
     igra.ustvari_plosco()
     igra.izpisi_plosco()
     return igra
@@ -282,28 +282,45 @@ class Potapljanje_ladjic:
         igra = self.igre[id_igre]
         print(igra.__dict__)
         poskus = igra.izstreli_strel(ugib)
-        self.igre[id_igre] = (igra, poskus)
+        self.igre[id_igre] = (igra)
         self.zapisi_igre_v_datoteko()
 
 
     def nalozi_igre_iz_datoteke(self):
         with open(self.datoteka_s_stanjem, 'r', encoding='utf-8') as f:
             igre = json.load(f)
-            self.igre = {int(id_igre[0]): (Igra())
-                        for id_igre in igre.items()}
+            print(igre)
+            for id_igre in igre.keys():
+                plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij = self.preberi_podatke(igre, id_igre)
+                self.igre.update({int(id_igre[0]):
+                 Igra(plosca,pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij)})
+            #self.igre = {int(id_igre[0]): (Igra())
+                        #for id_igre in igre.items()}
+            print(self.igre)
 
     def zapisi_igre_v_datoteko(self):
         with open(self.datoteka_s_stanjem, 'w', encoding='utf-8') as f:
-            igre = {id_igre: (igra.__dict__,stanje) 
-                        for id_igre, (igra, stanje) in self.igre.items()}
+            print(self.datoteka_s_stanjem)
+            print(self.igre.items())
+            igre = {id_igre: (igra.__dict__) 
+                        for id_igre, igra in self.igre.items()}
             json.dump(igre, f)
+
+
+    def preberi_podatke(self, datoteka, id_igre):
+        podatki_igre = datoteka.get(str(id_igre))
+        plosca = podatki_igre.get('plosca')
+        pozicija_ladij = podatki_igre.get('pozicija_ladij')
+        st_preostalih_strelov = podatki_igre.get('st_preostalih_strelov')
+        st_potopljenih_ladij = podatki_igre.get('st_potopljenih_ladij')
+        return plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij
 
 
     def nova_igra(self):
         self.nalozi_igre_iz_datoteke()
         id_igre = self.prost_id_igre()
         igra = nova_igra()
-        self.igre[id_igre] = (igra, ZACETEK)
+        self.igre[id_igre] = (igra)
         self.zapisi_igre_v_datoteko()
         return id_igre
 nova_igra()

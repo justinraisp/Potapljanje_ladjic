@@ -1,6 +1,6 @@
 % import model 
 % rebase('base.tpl')
-% igra.ustvari_plosco()
+
 
 <table>
 <tr>
