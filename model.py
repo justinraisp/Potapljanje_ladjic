@@ -4,7 +4,7 @@ from re import X
 
 velikost_plosce = 10
 
-stevilo_ladij = 5
+stevilo_ladij = 4
 
 konec_igre = False
 
@@ -236,10 +236,11 @@ class Igra():
 
         if self.st_potopljenih_ladij == stevilo_ladij:
             print('Cestitke, zmagali ste!')
-            konec_igre = True
+            return True
         elif self.st_preostalih_strelov <= 0:
             print('Zal ste izgubili! Zmanjkalo vam je strelov')
-            konec_igre = True
+            return True
+        return False
 
 
     def main(self):
@@ -280,7 +281,6 @@ class Potapljanje_ladjic:
     def ugibaj(self, id_igre, ugib):
         self.nalozi_igre_iz_datoteke()
         igra = self.igre[id_igre]
-        print(igra.__dict__)
         poskus = igra.izstreli_strel(ugib)
         self.igre[id_igre] = (igra)
         self.zapisi_igre_v_datoteko()
@@ -300,8 +300,8 @@ class Potapljanje_ladjic:
 
     def zapisi_igre_v_datoteko(self):
         with open(self.datoteka_s_stanjem, 'w', encoding='utf-8') as f:
-            print(self.datoteka_s_stanjem)
-            print(self.igre.items())
+            #print(self.datoteka_s_stanjem)
+            #print(self.igre.items())
             igre = {id_igre: (igra.__dict__) 
                         for id_igre, igra in self.igre.items()}
             json.dump(igre, f)

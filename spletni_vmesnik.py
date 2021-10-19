@@ -19,7 +19,6 @@ def index():
 def pokazi_igro():
     id_igre = int(bottle.request.get_cookie('idigre', secret=SKRIVNOST).split('e')[1])
     igra = potapljanje_ladjic.igre[id_igre]
-    print(igra.__dict__)
     return bottle.template('igra.tpl', igra=igra)
 
 

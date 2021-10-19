@@ -1,22 +1,31 @@
 % rebase('base.tpl')
+<!DOCTYPE html>
+<html>      
+    <head>
+        <meta charset='utf-8'>
+        <title>Potapljanje ladjic</title>
+    </head>
+    <body>
+        <div class='splash-container'>
+            <h1 class='splash-title'>Potapljanje ladjic</h1>
 
-  <p style='text-align:center;'>
-    <img src="img/battleship-hero-logo.jpg" alt="Potapljanje_ladjic" width='400'>
-  </p>
-  <h1>Potapljanje ladjic</h1>
+            <div>
+            <form action="/registracija/" method="get">
+                <button type="submit" class='btn splash-btn'>Registracija</button>
+                </form>
+            <br>
+            <form action="/prijava/" method="get">
+                <button type="submit" class='btn splash-btn'>Prijava</button>
+                </form>
+            <br>
+            <form action="/nova-igra/" method="get">
+                <button type="submit" class='btn splash-btn'>Nova igra</button>
+            </form>
+            </div>
+        </div>
 
-  <blockquote>
-    Potapljanje ladjic je dobra igra za preganjanje dolgčasa.
-  </blockquote>
+        <img src='/img/battleship-large.svg' class='splash-battleship-image'>
+    </body>
 
-  <form action="/registracija/" method="get">
-    <button type="submit">Registracija</button>
-  </form>
-<br>
-  <form action="/prijava/" method="get">
-    <button type="submit">Prijava</button>
-  </form>
 
-  <form action="/nova-igra/" method="get">
-    <button type="submit">Nova igra</button>
-  </form>
+</html>
