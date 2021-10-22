@@ -1,13 +1,11 @@
 import model
 
 def izpis_igre(igra):
-    # Poveze vse metode skupaj
     konec_igre = model.konec_igre
 
     print('---Dobrodosli v igri potapljanje ladjic---')
     print('Imate 50 strelov, da zadanete 5 ladij velikosti 2, 3, 3, 4, 5. Naj se bitka zacne!')
 
-    #igra.ustvari_plosco()
 
     while not konec_igre:
         print(igra.izpisi_plosco())
