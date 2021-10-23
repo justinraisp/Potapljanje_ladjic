@@ -34,21 +34,28 @@ def serve_pictures(picture):
     return bottle.static_file(picture, root='img')
 
 
-@bottle.route('/registracija/')
-def registracija():
-    return bottle.template('registracija.tpl')
+#@bottle.route('/registracija/')
+#def registracija():
+#    return bottle.template('registracija.tpl')
 
 
-@bottle.route('/prijava/')
-def prijava():
-    return bottle.template('prijava.tpl')
+#@bottle.route('/prijava/')
+#def prijava():
+#    return bottle.template('prijava.tpl')
 
 
-@bottle.route('/nova-igra/')
+@bottle.post('/nova-igra/')
 def nova_igra():
     id_igre = potapljanje_ladjic.nova_igra()
     bottle.response.set_cookie('idigre', 'idigre{}'.format(id_igre), path='/', secret=SKRIVNOST)
     bottle.redirect('/igra/')    
+
+
+#@bottle.get('/statistika/')
+#def pokazi_statistiko():
+#    slovar_statistik = model.statistika(datoteka_s_stanjem)
+#    return bottle.template('statistika.tpl',
+#                           slovar_statistik=slovar_statistik)
 
 
 #usernames = ["username", "user"]
@@ -79,24 +86,6 @@ def nova_igra():
 
 
 
-#@bottle.get('/prijava/')
-#def prijava():
-    #Implement login (you can check passwords here or etc)
-#    user_id = int(bottle.request.GET.get('user_id'))
-#    login.login_user(user_id)
-#    return bottle.redirect('/')
-
-
-
-
-
-
-#@login.load_user
-#def load_user_by_id(user_id):
-    
-
-
-# Some application views
 
 #@app.route('/')
 #def index():
@@ -129,16 +118,7 @@ def nova_igra():
     #return '<h1>Something went wrong</h1>'
 
 
-#@route('/')
-#def index():
-#    return {'name' : 'jsonData', 'myList': [1,2,3,4,5]}
 
-
-#@route('/querytest')
-#def querytest():
-#    p1 = request.query.p1
-#    p2 = request.query.p2
-#    return '<h1>The value of p1 is: ' + p1 + ' and the value of p2 is: ' + p2 + '</h1>'
 
 
 

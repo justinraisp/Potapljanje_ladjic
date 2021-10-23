@@ -1,6 +1,8 @@
 import random
 import json
+import numpy as np
 from re import X
+import time
 
 velikost_plosce = 10
 
@@ -27,11 +29,12 @@ class Uporabnik:
 
 class Igra():
 
-    def __init__(self, plosca=[], pozicija_ladij=[], st_preostalih_strelov=40, st_potopljenih_ladij=0):
+    def __init__(self, plosca=[], pozicija_ladij=[], st_preostalih_strelov=40, st_potopljenih_ladij=0, cas=time.time()):
         self.plosca = plosca
         self.pozicija_ladij = pozicija_ladij
         self.st_preostalih_strelov = st_preostalih_strelov
         self.st_potopljenih_ladij = st_potopljenih_ladij
+        self.cas = cas
 
 
 
@@ -71,32 +74,42 @@ class Igra():
         abeceda = 'ABCDEFGHIJKLMNOP'
         #abeceda = abeceda[0: len(self.plosca) + 1]
         x = ''
-
+        y = []
 
         for vrstica in range(len(self.plosca)):
             #print(abeceda[vrstica], end=') ')
+            vrst = []
             x += str(abeceda[vrstica])
+            vrst.append(abeceda[vrstica])
             for stolpec in range(len(self.plosca[vrstica])):
                 if self.plosca[vrstica][stolpec] == 'O':
                     if debug_mode:
                         #print('.', end=' ')
                         x += '.'
+                        vrst.append('.')
                     else:
                         #print('.', end=' ')
+                        vrst.append('.')
                         x += '.'
                 else:
                     #print(self.plosca[vrstica][stolpec], end= ' ')
+                    vrst.append(str(self.plosca[vrstica][stolpec]))
                     x += str(self.plosca[vrstica][stolpec])
             #print('')
             x += ' , ' #+ '\n'
+            y.append(vrst)
 
         #print('  ', end= ' ')
         x += '  '
 
+        st = ['/']
         for i in range(len(self.plosca[0])):
             #print(str(i), end=' ')
             x+= str(i)
+            st.append(str(i))
         #print('')
+        y.append(st)
+        a = np.array(y, dtype='object')
         return x
 
 
@@ -201,32 +214,33 @@ class Igra():
         stolpec = -1
         #lokacija = input('Vnesi vrstico (A-J) in stolpec (0-9), primer B4: ')
         lokacija = str(lokacija).upper()
-        if len(lokacija) <= 0 or len(lokacija) > 2:
-            print('Napaka: Vnesi eno vrstico in en stolpec kot B4') 
-            return False
-        vrstica = lokacija[0]
-        stolpec = lokacija[1]
+        while not je_veljavno:
+            if len(lokacija) != 2:
+                print('Napaka: Vnesi eno vrstico in en stolpec kot B4') 
+                return False
+            vrstica = lokacija[0]
+            stolpec = lokacija[1]
 
-        if not vrstica.isalpha() or not stolpec.isnumeric():
-            print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
-            return je_veljavno
-        vrstica = abeceda.find(vrstica)
+            if not vrstica.isalpha() or not stolpec.isnumeric():
+                print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
+                return je_veljavno
+            vrstica = abeceda.find(vrstica)
 
-        if not (-1 < vrstica < velikost_plosce):
-            print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
-            return je_veljavno
-        stolpec = int(stolpec)
+            if not (-1 < vrstica < velikost_plosce):
+                print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
+                return je_veljavno
+            stolpec = int(stolpec)
 
-        if not (-1 < stolpec < velikost_plosce):
-            print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
-            return je_veljavno
+            if not (-1 < stolpec < velikost_plosce):
+                print('Napaka: Vnesi crko (A-J) za vrstico in stevilko (0-9) za stolpec ')
+                return je_veljavno
 
-        if self.plosca[vrstica][stolpec] == '#' or self.plosca[vrstica][stolpec] == 'X':
-            print('Na to pozicijo je ze bil ustreljen strel, izberi drugo pozicijo')
-            return je_veljavno
+            if self.plosca[vrstica][stolpec] == '#' or self.plosca[vrstica][stolpec] == 'X':
+                print('Na to pozicijo je ze bil ustreljen strel, izberi drugo pozicijo')
+                return je_veljavno
 
-        if self.plosca[vrstica][stolpec] == '.' or self.plosca[vrstica][stolpec] == 'O':
-            je_veljavno = True
+            if self.plosca[vrstica][stolpec] == '.' or self.plosca[vrstica][stolpec] == 'O':
+                je_veljavno = True
         return je_veljavno
 
 
@@ -236,31 +250,18 @@ class Igra():
 
         if self.st_potopljenih_ladij == stevilo_ladij:
             print('Cestitke, zmagali ste!')
-            return True
+            Z = 'Zmaga'
+            return Z
         elif self.st_preostalih_strelov <= 0:
             print('Zal ste izgubili! Zmanjkalo vam je strelov')
-            return True
+            P = 'Poraz'
+            return P
         return False
 
 
-    def main(self):
-        # Poveze vse metode skupaj
-        print('---Dobrodosli v igri potapljanje ladjic---')
-        print('Imate 50 strelov, da zadanete 5 ladij velikosti 2, 3, 3, 4, 5. Naj se bitka zacne!')
-
-        self.ustvari_plosco()
-
-        while not konec_igre:
-            self.izpisi_plosco()
-            print('Stevilo preostalih ladij: ' + str(stevilo_ladij - self.st_potopljenih_ladij))
-            print('Stevilo preostalih strelov: ' + str(self.st_preostalih_strelov))
-            self.izstreli_strel()
-            print('---------------------------')
-            print('')
-            self.preveri_konec_igre()
 
 def nova_igra():
-    igra = Igra([],[],40,0)
+    igra = Igra([],[],40,0, time.time())
     igra.ustvari_plosco()
     igra.izpisi_plosco()
     return igra

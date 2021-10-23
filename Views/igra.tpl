@@ -1,7 +1,17 @@
 % import model 
 % rebase('base.tpl')
-
+% import time
+% zacetni_cas = time.time()
 <table>
+
+<tr>
+    <td>
+        <h1>Imate 40 strelov in 2 minuti, da zadanete 4 ladje velikosti 2, 3, 3, 4.</h1>
+    </td>
+</tr>
+
+
+
 <tr>
     <td>
         <h2>{{igra.izpisi_plosco()}}</h2>
@@ -10,14 +20,37 @@
 
 </table>
 
-<% if igra.preveri_konec_igre(): %>
-<h1>ZMAGA</h1>
+<% if igra.preveri_konec_igre() == 'Zmaga': %>
+<div class='splash-container'>
+  <h1 class='splash-title'>ZMAGA</h1>
+    <h2>Rezultat: </h2>
+    <form action="/nova-igra/" method="post">
+      <button type="submit">Nova igra</button>
+    </form>
+</div>
+
+<% elif igra.preveri_konec_igre() == 'Poraz': %>
+
+<div class='splash-container'>
+  <h1 class='splash-title'>PORAZ</h1>
+    <h2>Zmanjkalo vam je strelov.</h2>
+  <form action="/nova-igra/" method="post">
+    <button type="submit">Nova igra</button>
+  </form>
+</div>
+
+<% elif (time.time() - igra.cas) > 120: %>
+<div class='splash-container'>
+  <h1 class='splash-title'>PORAZ</h1>
+    <h2>Zmanjkalo vam je časa.</h2>
 
   <form action="/nova-igra/" method="post">
     <button type="submit">Nova igra</button>
   </form>
+</div>
 
 <% else: %>
+
 
 
 <tr>
@@ -41,28 +74,3 @@
   </form>
 </body>
 <% end %>
-
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  
-    var gumb = document.getElementsByName('gumbi')[0];
-
-    $(gumb).click(function(event) {
-        var lokacija = document.getElementsByName('lokacija')[0]
-
-        var lokacijaReg = /^[a-zA-Z][0-9]$/;
-
-        var odg = '';
-        if(model.igra.sprejmi_veljavni_strel(lokacija) == False)
-        {
-            odg = 'Neveljaven vnos.';
-            alert(odg);
-            event.preventDefault();
-        }
-    });
-});
-</script>
--->

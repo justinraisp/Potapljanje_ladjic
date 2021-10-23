@@ -10,17 +10,22 @@
             <h1 class='splash-title'>Potapljanje ladjic</h1>
 
             <div>
-            <form action="/registracija/" method="get">
+            <!--<form action="/registracija/" method="get">
                 <button type="submit" class='btn splash-btn'>Registracija</button>
                 </form>
             <br>
             <form action="/prijava/" method="get">
                 <button type="submit" class='btn splash-btn'>Prijava</button>
                 </form>
+                -->
             <br>
-            <form action="/nova-igra/" method="get">
+            <form action="/nova-igra/" method="post">
                 <button type="submit" class='btn splash-btn'>Nova igra</button>
+            <!--</form>
+               <form action="/statistika/" method="get">
+                <button type="submit" class='btn splash-btn'>Ogled statistike preteklih iger</button>
             </form>
+            -->
             </div>
         </div>
 
