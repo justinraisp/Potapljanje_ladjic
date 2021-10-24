@@ -6,12 +6,9 @@
 
 <tr>
     <td>
-        <h1>Imate 40 strelov in 2 minuti, da zadanete 4 ladje velikosti 2, 3, 3, 4.</h1>
+        <h1>Imate 40 strelov in 3 minute, da zadanete 4 ladje velikosti 2, 3, 3, 4.</h1>
     </td>
 </tr>
-
-
-
 <tr>
     <td>
         <h2>{{igra.izpisi_plosco()}}</h2>
@@ -39,7 +36,7 @@
   </form>
 </div>
 
-<% elif (time.time() - igra.cas) > 120: %>
+<% elif (time.time() - igra.cas) > 180: %>
 <div class='splash-container'>
   <h1 class='splash-title'>PORAZ</h1>
     <h2>Zmanjkalo vam je časa.</h2>
@@ -51,6 +48,18 @@
 
 <% else: %>
 
+<tr>
+    <td>
+        <h2 class='splash-podatki'>{{igra.izpisi_strel()}}</h2>
+    </td>
+</tr>
+
+
+<tr>
+    <td>
+        <h2>Preostanek casa: {{round(180 - (time.time() - igra.cas))}} sekund</h2>
+    </td>
+</tr>
 
 
 <tr>

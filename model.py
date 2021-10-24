@@ -3,6 +3,7 @@ import json
 import numpy as np
 from re import X
 import time
+import pandas as pd
 
 velikost_plosce = 10
 
@@ -29,12 +30,13 @@ class Uporabnik:
 
 class Igra():
 
-    def __init__(self, plosca=[], pozicija_ladij=[], st_preostalih_strelov=40, st_potopljenih_ladij=0, cas=time.time()):
+    def __init__(self, plosca=[], pozicija_ladij=[], st_preostalih_strelov=40, st_potopljenih_ladij=0, cas=time.time(), zadnji_strel=None):
         self.plosca = plosca
         self.pozicija_ladij = pozicija_ladij
         self.st_preostalih_strelov = st_preostalih_strelov
         self.st_potopljenih_ladij = st_potopljenih_ladij
         self.cas = cas
+        self.zadnji_strel = zadnji_strel
 
 
 
@@ -134,8 +136,25 @@ class Igra():
                     print("Ladja je bila zadeta!")
 
             self.st_preostalih_strelov -= 1
+            self.zadnji_strel = ugib
         else:
             return None
+
+    def izpisi_strel(self):
+        if self.zadnji_strel != None:
+            strel = self.zadnji_strel.upper()
+            vrstica = abeceda.find(strel[0])
+            stolpec = int(strel[1]) 
+            if self.plosca[vrstica][stolpec] == '#':
+                return "Zgresen strel, nobena ladja ni bila zadeta!"
+            elif self.plosca[vrstica][stolpec] == 'X':
+                if self.preveri_potopljeno_ladjo(vrstica, stolpec):
+                    return 'Zadetek, ladja je potopljena!'
+                else:
+                    return 'Zadetek, ladja je bila zadeta!'      
+        else:
+            return ''
+
 
 
 
@@ -258,10 +277,20 @@ class Igra():
             return P
         return False
 
-
+    def polepsaj_plosco(self):
+        plosca = self.plosca
+        print(plosca)
+        tabela = {}
+        for stevilka in range(10):
+            for vrstica in plosca:
+                tabela[str(stevilka)] = vrstica
+        print(tabela)
+        df = pd.DataFrame([tabela], index=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        print(df)
+        return  df
 
 def nova_igra():
-    igra = Igra([],[],40,0, time.time())
+    igra = Igra([],[],40,0, time.time(), None)
     igra.ustvari_plosco()
     igra.izpisi_plosco()
     return igra
