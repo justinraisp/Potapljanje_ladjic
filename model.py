@@ -273,21 +273,25 @@ class Igra():
             return Z
         elif self.st_preostalih_strelov <= 0:
             print('Zal ste izgubili! Zmanjkalo vam je strelov')
-            P = 'Poraz'
-            return P
+            P1 = 'Poraz1'
+            return P1
+        elif int(time.time()) - int(self.cas) > 180:
+            print('Zal ste izgubili, zmanjkalo vam je casa')
+            P2 = 'Poraz2'
+            return P2
         return False
 
-    def polepsaj_plosco(self):
-        plosca = self.plosca
-        print(plosca)
-        tabela = {}
-        for stevilka in range(10):
-            for vrstica in plosca:
-                tabela[str(stevilka)] = vrstica
-        print(tabela)
-        df = pd.DataFrame([tabela], index=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-        print(df)
-        return  df
+    #def polepsaj_plosco(self):
+    #    plosca = self.plosca
+    #    print(plosca)
+    #    tabela = {}
+    #    for stevilka in range(10):
+    #        for vrstica in plosca:
+    #            tabela[str(stevilka)] = vrstica
+    #    print(tabela)
+    #    df = pd.DataFrame([tabela], index=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    #    print(df)
+    #    return  df
 
 def nova_igra():
     igra = Igra([],[],40,0, time.time(), None)
@@ -321,9 +325,9 @@ class Potapljanje_ladjic:
             igre = json.load(f)
             print(igre)
             for id_igre in igre.keys():
-                plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij = self.preberi_podatke(igre, id_igre)
+                plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel = self.preberi_podatke(igre, id_igre)
                 self.igre.update({int(id_igre[0]):
-                 Igra(plosca,pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij)})
+                 Igra(plosca,pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel)})
             #self.igre = {int(id_igre[0]): (Igra())
                         #for id_igre in igre.items()}
             print(self.igre)
@@ -343,7 +347,9 @@ class Potapljanje_ladjic:
         pozicija_ladij = podatki_igre.get('pozicija_ladij')
         st_preostalih_strelov = podatki_igre.get('st_preostalih_strelov')
         st_potopljenih_ladij = podatki_igre.get('st_potopljenih_ladij')
-        return plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij
+        zacetni_cas = podatki_igre.get('cas')
+        zadnji_strel = podatki_igre.get('zadnji_strel')
+        return plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel
 
 
     def nova_igra(self):

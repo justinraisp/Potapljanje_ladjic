@@ -1,9 +1,11 @@
 % import model 
 % rebase('base.tpl')
 % import time
-% zacetni_cas = time.time()
-<table>
 
+
+
+
+<table>
 <tr>
     <td>
         <h1>Imate 40 strelov in 3 minute, da zadanete 4 ladje velikosti 2, 3, 3, 4.</h1>
@@ -26,7 +28,7 @@
     </form>
 </div>
 
-<% elif igra.preveri_konec_igre() == 'Poraz': %>
+<% elif igra.preveri_konec_igre() == 'Poraz1': %>
 
 <div class='splash-container'>
   <h1 class='splash-title'>PORAZ</h1>
@@ -36,7 +38,7 @@
   </form>
 </div>
 
-<% elif (time.time() - igra.cas) > 180: %>
+<% elif igra.preveri_konec_igre() == 'Poraz2': %>
 <div class='splash-container'>
   <h1 class='splash-title'>PORAZ</h1>
     <h2>Zmanjkalo vam je časa.</h2>
@@ -75,11 +77,11 @@
 </tr>
 
 <tr>
-<body>
+
   <form id = 'form' action='/igra/' method='post'>
     Vnesi vrstico (A-J) in stolpec (0-9), primer B4:  
       <input type='text' name='lokacija' id='lokacija' maxlength='2' minlength='2' pattern='^[A-j]\d+$' required>
       <button type="submit">Izstreli</button>
   </form>
-</body>
+
 <% end %>
