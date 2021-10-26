@@ -3,7 +3,6 @@ import json
 import numpy as np
 from re import X
 import time
-import pandas as pd
 
 velikost_plosce = 10
 
@@ -15,29 +14,26 @@ abeceda = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 datoteka_s_stanjem = 'stanje.json'
 
-ZACETEK = 'Z'
-ZMAGA = 'W'
-PORAZ = 'L'
 
 
-
-class Uporabnik:
-    def __init__(self, Ime, Priimek):
-        Ime = self.Ime
-        Priimek = self.Priimek
+def odstotek(stevec, imenovalec):
+    return round(int(stevec) / int(imenovalec) * 100)
 
 
 
 class Igra():
 
-    def __init__(self, plosca=[], pozicija_ladij=[], st_preostalih_strelov=40, st_potopljenih_ladij=0, cas=time.time(), zadnji_strel=None):
+    def __init__(self, plosca=[], pozicija_ladij=[], st_preostalih_strelov=40, st_potopljenih_ladij=0,
+        cas=time.time(), zadnji_strel=None, st_zadetih_strelov=0, natancnost=0, stanje=None):
         self.plosca = plosca
         self.pozicija_ladij = pozicija_ladij
         self.st_preostalih_strelov = st_preostalih_strelov
         self.st_potopljenih_ladij = st_potopljenih_ladij
         self.cas = cas
         self.zadnji_strel = zadnji_strel
-
+        self.st_zadetih_strelov = st_zadetih_strelov
+        self.natancnost = natancnost
+        self.stanje = stanje
 
 
 
@@ -129,6 +125,7 @@ class Igra():
             elif self.plosca[vrstica][stolpec] == "O":
                 print("Zadetek!", end=" ")
                 self.plosca[vrstica][stolpec] = "X"
+                self.st_zadetih_strelov += 1
                 if self.preveri_potopljeno_ladjo(vrstica, stolpec):
                     print("Ladja je potopljena!")
                     self.st_potopljenih_ladij += 1
@@ -137,6 +134,9 @@ class Igra():
 
             self.st_preostalih_strelov -= 1
             self.zadnji_strel = ugib
+            st_strelov = 40 - int(self.st_preostalih_strelov)
+            self.natancnost = odstotek(self.st_zadetih_strelov, st_strelov)
+            
         else:
             return None
 
@@ -266,44 +266,45 @@ class Igra():
 
     def preveri_konec_igre(self):
         # Ali so potopljene vse ladje, ali nam je zmanjkalo strelov
+        L = 'Poraz'
+        W = 'Zmaga'
 
         if self.st_potopljenih_ladij == stevilo_ladij:
             print('Cestitke, zmagali ste!')
             Z = 'Zmaga'
+            self.stanje = W
+            print(self.stanje)
             return Z
+        elif self.st_zadetih_strelov == 12:
+            print('Cestitke, zmagali ste!')
+            Z = 'Zmaga'
+            self.stanje = W
+            print(self.stanje)
+            return Z            
         elif self.st_preostalih_strelov <= 0:
             print('Zal ste izgubili! Zmanjkalo vam je strelov')
             P1 = 'Poraz1'
+            self.stanje = L
             return P1
         elif int(time.time()) - int(self.cas) > 180:
             print('Zal ste izgubili, zmanjkalo vam je casa')
             P2 = 'Poraz2'
+            self.stanje = L
             return P2
         return False
 
-    #def polepsaj_plosco(self):
-    #    plosca = self.plosca
-    #    print(plosca)
-    #    tabela = {}
-    #    for stevilka in range(10):
-    #        for vrstica in plosca:
-    #            tabela[str(stevilka)] = vrstica
-    #    print(tabela)
-    #    df = pd.DataFrame([tabela], index=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-    #    print(df)
-    #    return  df
-
 def nova_igra():
-    igra = Igra([],[],40,0, time.time(), None)
+    igra = Igra([],[],40,0, time.time(), None,0,None)
     igra.ustvari_plosco()
     igra.izpisi_plosco()
     return igra
 
 class Potapljanje_ladjic:
 
-    def __init__(self, datoteka_s_stanjem):
+    def __init__(self, datoteka_s_stanjem, statistika={}):
         self.igre = {}
         self.datoteka_s_stanjem = datoteka_s_stanjem
+        self.statistika = statistika
 
     
     def prost_id_igre(self):
@@ -318,6 +319,8 @@ class Potapljanje_ladjic:
         poskus = igra.izstreli_strel(ugib)
         self.igre[id_igre] = (igra)
         self.zapisi_igre_v_datoteko()
+        #self.napisi_statistiko()
+        #print(self.statistika)
 
 
     def nalozi_igre_iz_datoteke(self):
@@ -325,9 +328,9 @@ class Potapljanje_ladjic:
             igre = json.load(f)
             print(igre)
             for id_igre in igre.keys():
-                plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel = self.preberi_podatke(igre, id_igre)
+                plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel, st_zadetih_strelov, natancost, stanje = self.preberi_podatke(igre, id_igre)
                 self.igre.update({int(id_igre[0]):
-                 Igra(plosca,pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel)})
+                 Igra(plosca,pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel, st_zadetih_strelov, natancost, stanje)})
             #self.igre = {int(id_igre[0]): (Igra())
                         #for id_igre in igre.items()}
             print(self.igre)
@@ -342,6 +345,7 @@ class Potapljanje_ladjic:
 
 
     def preberi_podatke(self, datoteka, id_igre):
+        #print(datoteka)
         podatki_igre = datoteka.get(str(id_igre))
         plosca = podatki_igre.get('plosca')
         pozicija_ladij = podatki_igre.get('pozicija_ladij')
@@ -349,14 +353,63 @@ class Potapljanje_ladjic:
         st_potopljenih_ladij = podatki_igre.get('st_potopljenih_ladij')
         zacetni_cas = podatki_igre.get('cas')
         zadnji_strel = podatki_igre.get('zadnji_strel')
-        return plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel
+        st_zadetih_strelov = podatki_igre.get('st_zadetih_strelov')
+        natancnost = podatki_igre.get('natancnost')
+        stanje = podatki_igre.get('stanje')
+        return plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel, st_zadetih_strelov, natancnost, stanje
 
 
     def nova_igra(self):
+        #se enkrat zapisemo, da se zapisa zmaga ali poraz
+        self.zapisi_igre_v_datoteko()
+        print(napisi_statistiko1(self.datoteka_s_stanjem))
         self.nalozi_igre_iz_datoteke()
         id_igre = self.prost_id_igre()
         igra = nova_igra()
         self.igre[id_igre] = (igra)
         self.zapisi_igre_v_datoteko()
         return id_igre
+
+
+    def napisi_statistiko(self):
+        with open(self.datoteka_s_stanjem, 'r', encoding='utf-8') as f:
+            igre = json.load(f)
+            st_zmag = 0
+            for id_igre in igre.keys():
+                _, _, st_preostalih_strelov, _,_, _, st_zadetih_strelov, natancost, stanje = self.preberi_podatke(igre, id_igre)
+                if stanje == 'Zmaga':
+                    st_zmag += 1
+                self.statistika['Odstotek zmag'] = odstotek(int(st_zmag),int(len(igre.keys())))
+                self.statistika['Odstotek zadetih strelov'] = odstotek(int(st_zadetih_strelov),int(40-st_preostalih_strelov))
+
+def napisi_statistiko1(datoteka):
+    statistika = {}
+    st_zmag = 0
+    natancnost_iger = []
+    st_strelov = 0
+    st_zadetih_strelov = 0
+    with open(datoteka, 'r', encoding='utf-8') as f:
+        igre = json.load(f)
+        st_iger = len(igre.keys())
+        for id_igre in igre.keys():
+            stanje = igre[id_igre].get('stanje')
+            natancnost = igre[id_igre].get('natancnost')
+            st_strelov_v_igri = 40 - int(igre[id_igre].get('st_preostalih_strelov'))
+            st_strelov += st_strelov_v_igri
+            st_zadetih_strelov += int(igre[id_igre].get('st_zadetih_strelov'))
+            if natancnost != None:
+                natancnost_iger.append(int(natancnost))
+            if stanje == 'Zmaga':
+                st_zmag += 1
+
+        #Ne deli z 0 
+    print(natancnost_iger)  
+
+    statistika['Stevilo iger'] = st_iger     
+    if len(igre.keys()) != 0:
+        statistika['Odstotek zmag'] = odstotek(st_zmag, st_iger)
+        statistika['Najboljsa natancnost igre'] = max(natancnost_iger)
+        statistika['Povprecna natancnost'] = odstotek(st_zadetih_strelov, st_strelov)
+
+    return statistika
 nova_igra()

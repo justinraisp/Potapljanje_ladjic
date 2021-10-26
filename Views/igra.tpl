@@ -3,21 +3,15 @@
 % import time
 
 
+<body>
 
 
-<table>
-<tr>
-    <td>
         <h1>Imate 40 strelov in 3 minute, da zadanete 4 ladje velikosti 2, 3, 3, 4.</h1>
-    </td>
-</tr>
-<tr>
-    <td>
-        <h2>{{igra.izpisi_plosco()}}</h2>
-    </td>
-</tr>
 
-</table>
+        <h2>{{igra.izpisi_plosco()}}</h2>
+
+</body>
+
 
 <% if igra.preveri_konec_igre() == 'Zmaga': %>
 <div class='splash-container'>
@@ -50,33 +44,43 @@
 
 <% else: %>
 
-<tr>
-    <td>
-        <h2 class='splash-podatki'>{{igra.izpisi_strel()}}</h2>
-    </td>
-</tr>
 
 
-<tr>
-    <td>
-        <h2>Preostanek casa: {{round(180 - (time.time() - igra.cas))}} sekund</h2>
-    </td>
-</tr>
+        <h2 class='splash-izpis'>{{igra.izpisi_strel()}}</h2>
 
 
-<tr>
-    <td>
-        <h2>Stevilo preostalih ladij: {{model.stevilo_ladij - igra.st_potopljenih_ladij}}</h2>
-    </td>
-</tr>
 
-<tr>
-    <td>
-        <h2>Stevilo preostalih strelov: {{igra.st_preostalih_strelov}}</h2>
-    </td>
-</tr>
 
-<tr>
+
+
+        <h2 class='splash-podatki'>Preostanek casa: {{round(180 - (time.time() - igra.cas))}} sekund</h2>
+
+
+
+
+
+
+<h2 class='splash-podatki'>Stevilo preostalih ladij: {{model.stevilo_ladij - igra.st_potopljenih_ladij}}</h2>
+
+
+
+
+
+        <h2 class='splash-podatki'>Stevilo preostalih strelov: {{igra.st_preostalih_strelov}}</h2>
+
+
+
+
+
+        <h2 class='splash-podatki'>Stevilo zadetih strelov: {{igra.st_zadetih_strelov}}</h2>
+
+
+
+
+        <h2 class='splash-podatki'>Natancnost: {{igra.natancnost}} %</h2>
+
+
+
 
   <form id = 'form' action='/igra/' method='post'>
     Vnesi vrstico (A-J) in stolpec (0-9), primer B4:  
