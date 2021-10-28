@@ -1,7 +1,6 @@
 import bottle
 import model
 
-
 SKRIVNOST = 'moja skrivnost'
 datoteka_s_stanjem = 'stanje.json'
 
@@ -17,7 +16,11 @@ def index():
 def pokazi_igro():
     id_igre = int(bottle.request.get_cookie('idigre', secret=SKRIVNOST).split('e')[1])
     igra = potapljanje_ladjic.igre[id_igre]
-    return bottle.template('igra.tpl', igra=igra)
+#crke pomenijo vrstico
+    a, b, c, d = igra.izpisi_plosco()[0], igra.izpisi_plosco()[1], igra.izpisi_plosco()[2], igra.izpisi_plosco()[3]
+    e, f, g = igra.izpisi_plosco()[4], igra.izpisi_plosco()[5], igra.izpisi_plosco()[6]
+    h, i, j = igra.izpisi_plosco()[7], igra.izpisi_plosco()[8], igra.izpisi_plosco()[9]    
+    return bottle.template('igra.tpl', igra=igra, a=a, b=b, c=c, d=d, e=e, f=f, g=g,h=h, i=i, j=j)
 
 
 @bottle.post('/igra/')
@@ -48,6 +51,3 @@ def pokazi_statistiko():
 
 
 bottle.run(reloader=True, debug=True)
-
-#if __name__ == '__main__':
-#    bottle.run(debug=True, reloader=True)
