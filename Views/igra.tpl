@@ -6,7 +6,7 @@
 <body>
 
 
-        <h1>Imate 40 strelov in 3 minute, da zadanete 4 ladje velikosti 2, 3, 3, 4.</h1>
+        <h1>Imate 40 strelov in 3 minute, da zadanete 4 ladje velikosti 2, 3, 4, 5.</h1>
 
         <h2>{{igra.izpisi_plosco()}}</h2>
 
@@ -17,9 +17,21 @@
 <div class='splash-container'>
   <h1 class='splash-title'>ZMAGA</h1>
     <h2>Rezultat: </h2>
-    <form action="/nova-igra/" method="post">
-      <button type="submit">Nova igra</button>
+<!--    <form action="/nova-igra/" method="post">
+      <button type="submit" class='btn splash-btn'>Nova igra</button>
     </form>
+
+    <form action="/statistika/" method="get">
+      <button type="submit" class='btn splash-btn'>Ogled statistike preteklih iger</button>
+    </form>
+--> <div>
+            <form action="/" method="get">
+                <button type="submit" class='btn splash-btn'>Zacetna stran</button>
+            </form>
+
+    </div>
+
+
 </div>
 
 <% elif igra.preveri_konec_igre() == 'Poraz1': %>
@@ -28,8 +40,15 @@
   <h1 class='splash-title'>PORAZ</h1>
     <h2>Zmanjkalo vam je strelov.</h2>
   <form action="/nova-igra/" method="post">
-    <button type="submit">Nova igra</button>
+    <button type="submit" class='btn splash-btn'>Nova igra</button>
   </form>
+
+  <form action="/statistika/" method="get">
+    <button type="submit" class='btn splash-btn'>Ogled statistike preteklih iger</button>
+  </form>
+
+
+
 </div>
 
 <% elif igra.preveri_konec_igre() == 'Poraz2': %>
@@ -37,10 +56,19 @@
   <h1 class='splash-title'>PORAZ</h1>
     <h2>Zmanjkalo vam je časa.</h2>
 
-  <form action="/nova-igra/" method="post">
-    <button type="submit">Nova igra</button>
+<!--  <form action="/nova-igra/" method="post">
+    <button type="submit" class='btn splash-btn'>Nova igra</button>
   </form>
-</div>
+
+  <form action="/statistika/" method="get">
+    <button type="submit" class='btn splash-btn'>Ogled statistike preteklih iger</button>
+  </form>
+--> <div>
+            <form action="/" method="get">
+                <button type="submit" class='btn splash-btn'>Zacetna stran</button>
+            </form>
+
+    </div>
 
 <% else: %>
 

@@ -21,11 +21,14 @@
             <br>
             <form action="/nova-igra/" method="post">
                 <button type="submit" class='btn splash-btn'>Nova igra</button>
-            <!--</form>
-               <form action="/statistika/" method="get">
+            </form>
+            <br>
+            <br>
+            <form action="/statistika/" method="get">
                 <button type="submit" class='btn splash-btn'>Ogled statistike preteklih iger</button>
             </form>
-            -->
+
+
             </div>
         </div>
 

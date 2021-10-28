@@ -14,10 +14,12 @@ abeceda = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 datoteka_s_stanjem = 'stanje.json'
 
-
+#STATISTIKA = {}
 
 def odstotek(stevec, imenovalec):
     return round(int(stevec) / int(imenovalec) * 100)
+
+
 
 
 
@@ -56,7 +58,7 @@ class Igra():
             nakljucna_vrstica = random.randint(0, velikost_plosce - 1)
             nakljucni_stolpec = random.randint(0, velikost_plosce - 1)
             smer = random.choice(['levo', 'desno', 'gor', 'dol'])
-            velikost_ladje = [2, 3, 3, 4, 5]
+            velikost_ladje = [2, 3, 4, 5]
             if self.poskusi_postavit_ladjo(nakljucna_vrstica, nakljucni_stolpec, smer, velikost_ladje[indeks]):
                 stevilo_postavljenih_ladij += 1
                 indeks += 1 
@@ -158,19 +160,39 @@ class Igra():
 
 
 
-    def preveri_plosco_in_postavi_ladjo(self, zacetna_vrst, koncna_vrst, zacetni_stol, koncni_stol):
+    def preveri_plosco_in_postavi_ladjo(self, zacetna_vrst, koncna_vrst, zacetni_stol, koncni_stol, smer, dolzina):
         # Preveri, ce lahko tam postavi ladjo 
         vse_velja = True
-        for vrstica in range(zacetna_vrst, koncna_vrst):
-            for stolpec in range(zacetni_stol, koncni_stol):
-                if self.plosca[vrstica][stolpec] != '.':
-                    vse_velja = False
-                    break
-        if vse_velja:
-            self.pozicija_ladij.append([zacetna_vrst, koncna_vrst, zacetni_stol, koncni_stol])
-            for vrstica in range(zacetna_vrst, koncna_vrst):
+
+        if smer == 'levo' or smer == 'desno':
+#            if self.plosca[zacetna_vrst][zacetni_stol-1] == 'O' and self.plosca[koncna_vrst][koncni_stol+1] == 'O':
+#                vse_velja = False
+
+            for vrstica in range(zacetna_vrst, koncna_vrst+1):
                 for stolpec in range(zacetni_stol, koncni_stol):
-                    self.plosca[vrstica][stolpec] = 'O'
+                    if self.plosca[vrstica][stolpec] != '.': #and self.plosca[vrstica+1][stolpec] == 'O' and self.plosca[vrstica-1][stolpec] == 'O':
+                        vse_velja = False   #dodal da se ladjice ne morejo dotikat
+                        break
+        if smer == 'dol' or smer == 'gor':
+#            if self.plosca[zacetna_vrst-1][zacetni_stol] == 'O' and self.plosca[koncna_vrst+1][koncni_stol] == 'O':
+#                vse_velja = False
+            for vrstica in range(zacetna_vrst, koncna_vrst):
+                for stolpec in range(zacetni_stol, koncni_stol+1):
+                    if self.plosca[vrstica][stolpec] != '.': #and self.plosca[vrstica][stolpec+1] == 'O' and self.plosca[vrstica][stolpec-1] == 'O':
+                        vse_velja = False
+                        break
+
+        if vse_velja:
+            if smer == 'dol' or smer == 'gor':
+                self.pozicija_ladij.append([zacetna_vrst, koncna_vrst-1, zacetni_stol, koncni_stol])
+                for vrstica in range(zacetna_vrst, koncna_vrst):
+                    for stolpec in range(zacetni_stol, koncni_stol+1):
+                        self.plosca[vrstica][stolpec] = 'O'
+            elif smer == 'levo' or smer == 'desno':               
+                self.pozicija_ladij.append([zacetna_vrst, koncna_vrst, zacetni_stol, koncni_stol-1])
+                for vrstica in range(zacetna_vrst, koncna_vrst+1):
+                    for stolpec in range(zacetni_stol, koncni_stol):
+                        self.plosca[vrstica][stolpec] = 'O'
 
         return vse_velja
 
@@ -189,22 +211,29 @@ class Igra():
                 return False
             zacetni_stolpec = stolpec - dolzina +1
 
+            koncna_vrstica = vrstica
+
         elif smer == 'desno':
             if stolpec + dolzina >= velikost_plosce:
                 return False
-            koncni_stolpec = stolpec + dolzina         
-
+            koncni_stolpec = stolpec + dolzina 
+        
+            koncna_vrstica = vrstica
         elif smer == 'gor':
             if vrstica - dolzina < 0:
                 return False
             zacetna_vrstica = vrstica - dolzina +1 
-
+            koncni_stolpec = stolpec
         elif smer == 'dol':
+            koncna_vrstica = vrstica + dolzina
+            koncni_stolpec = stolpec
             if vrstica + dolzina >= velikost_plosce:
                 return False
-            koncna_vrstica = vrstica + dolzina
-
-        return self.preveri_plosco_in_postavi_ladjo(zacetna_vrstica, koncna_vrstica, zacetni_stolpec, koncni_stolpec)
+#            if vrstica + dolzina +1 <= velikost_plosce and (self.plosca[zacetna_vrstica-1][zacetni_stolpec] != 'O' or self.plosca[koncna_vrstica+1][zacetni_stolpec] != 'O'):
+#                return False
+#            else:
+#                for stolpec in 
+        return self.preveri_plosco_in_postavi_ladjo(zacetna_vrstica, koncna_vrstica, zacetni_stolpec, koncni_stolpec, smer, dolzina)
 
 
 
@@ -218,9 +247,13 @@ class Igra():
             koncni_stolpec = pozicija[3]
             if zacetna_vrstica <= vrstica <= koncna_vrstica and zacetni_stolpec <= stolpec <= koncni_stolpec:
                 # Ladja najdena, preveri ce je potopljena
-                for vrst in range(zacetna_vrstica, koncna_vrstica):
-                    for stolp in range(zacetni_stolpec, koncni_stolpec):
-                        if self.plosca[vrst][stolp] != 'X':
+                if zacetni_stolpec == koncni_stolpec:
+                    for vrst in range(zacetna_vrstica, koncna_vrstica+1):
+                        if self.plosca[vrst][zacetni_stolpec] != 'X':
+                            return False
+                if zacetna_vrstica == koncna_vrstica:
+                    for stolp in range(zacetni_stolpec, koncni_stolpec+1):
+                        if self.plosca[zacetna_vrstica][stolp] != 'X':
                             return False
         return True
 
@@ -275,12 +308,12 @@ class Igra():
             self.stanje = W
             print(self.stanje)
             return Z
-        elif self.st_zadetih_strelov == 12:
-            print('Cestitke, zmagali ste!')
-            Z = 'Zmaga'
-            self.stanje = W
-            print(self.stanje)
-            return Z            
+#        elif self.st_zadetih_strelov == 14:
+#            print('Cestitke, zmagali ste!')
+#            Z = 'Zmaga'
+#            self.stanje = W
+#            print(self.stanje)
+#            return Z            
         elif self.st_preostalih_strelov <= 0:
             print('Zal ste izgubili! Zmanjkalo vam je strelov')
             P1 = 'Poraz1'
@@ -316,9 +349,11 @@ class Potapljanje_ladjic:
     def ugibaj(self, id_igre, ugib):
         self.nalozi_igre_iz_datoteke()
         igra = self.igre[id_igre]
-        poskus = igra.izstreli_strel(ugib)
+        igra.preveri_konec_igre()
+#        poskus = igra.izstreli_strel(ugib)
         self.igre[id_igre] = (igra)
         self.zapisi_igre_v_datoteko()
+#        STATISTIKA = napisi_statistiko(self.datoteka_s_stanjem)
         #self.napisi_statistiko()
         #print(self.statistika)
 
@@ -361,8 +396,8 @@ class Potapljanje_ladjic:
 
     def nova_igra(self):
         #se enkrat zapisemo, da se zapisa zmaga ali poraz
-        self.zapisi_igre_v_datoteko()
-        print(napisi_statistiko1(self.datoteka_s_stanjem))
+        #self.zapisi_igre_v_datoteko()
+        print(napisi_statistiko(self.datoteka_s_stanjem))
         self.nalozi_igre_iz_datoteke()
         id_igre = self.prost_id_igre()
         igra = nova_igra()
@@ -382,7 +417,7 @@ class Potapljanje_ladjic:
                 self.statistika['Odstotek zmag'] = odstotek(int(st_zmag),int(len(igre.keys())))
                 self.statistika['Odstotek zadetih strelov'] = odstotek(int(st_zadetih_strelov),int(40-st_preostalih_strelov))
 
-def napisi_statistiko1(datoteka):
+def napisi_statistiko(datoteka):
     statistika = {}
     st_zmag = 0
     natancnost_iger = []
@@ -397,19 +432,25 @@ def napisi_statistiko1(datoteka):
             st_strelov_v_igri = 40 - int(igre[id_igre].get('st_preostalih_strelov'))
             st_strelov += st_strelov_v_igri
             st_zadetih_strelov += int(igre[id_igre].get('st_zadetih_strelov'))
-            if natancnost != None:
+            if natancnost != None and stanje != None:
                 natancnost_iger.append(int(natancnost))
             if stanje == 'Zmaga':
                 st_zmag += 1
 
         #Ne deli z 0 
     print(natancnost_iger)  
-
-    statistika['Stevilo iger'] = st_iger     
+    statistika['Odstotek zmag'] = 0
+    statistika['Stevilo iger'] = st_iger
+    statistika['Stevilo strelov'] = st_strelov  
+    statistika['Stevilo zadetih strelov'] = st_zadetih_strelov
+    statistika['Najboljsa natancnost igre'] = 0
+    #statistika['Povprecna natancnost'] = 0   
     if len(igre.keys()) != 0:
         statistika['Odstotek zmag'] = odstotek(st_zmag, st_iger)
-        statistika['Najboljsa natancnost igre'] = max(natancnost_iger)
-        statistika['Povprecna natancnost'] = odstotek(st_zadetih_strelov, st_strelov)
+
+        if len(natancnost_iger) != 0:
+            statistika['Najboljsa natancnost igre'] = max(natancnost_iger)
+            #statistika['Povprecna natancnost'] = odstotek(st_zadetih_strelov, st_strelov)
 
     return statistika
 nova_igra()

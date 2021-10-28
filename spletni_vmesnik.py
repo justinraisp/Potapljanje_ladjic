@@ -32,16 +32,6 @@ def serve_pictures(picture):
     return bottle.static_file(picture, root='img')
 
 
-#@bottle.route('/registracija/')
-#def registracija():
-#    return bottle.template('registracija.tpl')
- 
-
-#@bottle.route('/prijava/')
-#def prijava():
-#    return bottle.template('prijava.tpl')
-
-
 @bottle.post('/nova-igra/')
 def nova_igra():
     id_igre = potapljanje_ladjic.nova_igra()
@@ -49,17 +39,15 @@ def nova_igra():
     bottle.redirect('/igra/')    
 
 
-@bottle.post('/ogled-statistike/')
-def ogled():
-    bottle.redirect('/statistika/')
-
 @bottle.get('/statistika/')
 def pokazi_statistiko():
-    slovar_statistik = model.napisi_statistiko1(datoteka_s_stanjem)
+    potapljanje_ladjic.zapisi_igre_v_datoteko()
+    slovar_statistik = model.napisi_statistiko(datoteka_s_stanjem)
     return bottle.template('statistika.tpl',
                            slovar_statistik=slovar_statistik)
 
 
+bottle.run(reloader=True, debug=True)
 
-if __name__ == '__main__':
-    bottle.run(debug=True, reloader=True)
+#if __name__ == '__main__':
+#    bottle.run(debug=True, reloader=True)
