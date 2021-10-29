@@ -2,23 +2,10 @@
 % rebase('base.tpl')
 % import time
 
-
-<!--
-<script>
-$( "#plosca" ).load( "plosca #plosca" );
-</script>
-<div include-html='plosca.html' id='plosca'></div>
-<script src='jquery-3.6.0.js'></script>
-<script src='include-html.js'></script>
-
-
-  {%for value in igra.izpisi_plosco()%}
-  {%endfor%}
--->
 <body>
 
         <h1>Imate 40 strelov in 3 minute, da zadanete 4 ladje velikosti 2, 3, 4, 5.</h1>
-
+<aside>
 <table>
     <tr>
       <td>A</td><td>{{a[1]}}</td><td>{{a[2]}}</td><td>{{a[3]}}</td><td>{{a[4]}}</td><td>{{a[5]}}</td><td>{{a[6]}}</td><td>{{a[7]}}</td><td>{{a[8]}}</td><td>{{a[9]}}</td><td>{{a[10]}}</td>
@@ -55,7 +42,14 @@ $( "#plosca" ).load( "plosca #plosca" );
     </tr>
 
   </table>
-</body>
+  <h3>Legenda:</h3>
+  <ul>
+    <li>'.' &nbsp; predstavlja vodo</li>
+    <li>'#' &nbsp; predstavlja zgrešen strel</li>
+    <li>'X' &nbsp; predstavlja zadet strel</li>
+  </ul>
+  </aside>
+
 
 
 <% if igra.preveri_konec_igre() == 'Zmaga': %>
@@ -80,9 +74,6 @@ $( "#plosca" ).load( "plosca #plosca" );
   <h1 class='splash-title'>PORAZ</h1>
     <h2>Zmanjkalo vam je strelov.</h2>
 <!--
-<div class='splash-container'>
-  <h1 class='splash-title'>PORAZ</h1>
-    <h2>Zmanjkalo vam je strelov.</h2>
   <form action="/nova-igra/" method="post">
     <button type="submit" class='btn splash-btn'>Nova igra</button>
   </form>
@@ -120,20 +111,20 @@ $( "#plosca" ).load( "plosca #plosca" );
 
       <h2 class='splash-izpis'>{{igra.izpisi_strel()}}</h2>
 
-      <h2 class='splash-podatki'>Preostanek casa: {{round(180 - (time.time() - igra.cas))}} sekund</h2>
+      <h2 class='splash-podatki'>Preostanek časa: {{round(180 - (time.time() - igra.cas))}} sekund</h2>
 
-      <h2 class='splash-podatki'>Stevilo preostalih ladij: {{model.stevilo_ladij - igra.st_potopljenih_ladij}}</h2>
+      <h2 class='splash-podatki'>Število preostalih ladij: {{model.stevilo_ladij - igra.st_potopljenih_ladij}}</h2>
 
-      <h2 class='splash-podatki'>Stevilo preostalih strelov: {{igra.st_preostalih_strelov}}</h2>
+      <h2 class='splash-podatki'>Število preostalih strelov: {{igra.st_preostalih_strelov}}</h2>
 
-      <h2 class='splash-podatki'>Stevilo zadetih strelov: {{igra.st_zadetih_strelov}}</h2>
+      <h2 class='splash-podatki'>Število zadetih strelov: {{igra.st_zadetih_strelov}}</h2>
 
-      <h2 class='splash-podatki'>Natancnost: {{igra.natancnost}} %</h2>
-
+      <h2 class='splash-podatki'>Natančnost: {{igra.natancnost}} %</h2>
+</body>
   <form id = 'form' action='/igra/' method='post'>
-    Vnesi vrstico (A-J) in stolpec (0-9), primer B4:  
+    <h2 class='splash-podatki'>Vnesi vrstico (A-J) in stolpec (0-9), primer B4:  
       <input type='text' name='lokacija' id='lokacija' maxlength='2' minlength='2' pattern='^[A-j]\d+$' required>
-      <button type="submit">Izstreli</button>
+      <button type="submit">Izstreli</button></h2>
   </form>
 
 <% end %>

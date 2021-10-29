@@ -1,8 +1,8 @@
 import random
 import json
-import numpy as np
-from re import X
 import time
+
+
 
 velikost_plosce = 10
 
@@ -14,13 +14,10 @@ abeceda = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 datoteka_s_stanjem = 'stanje.json'
 
-#STATISTIKA = {}
+
 
 def odstotek(stevec, imenovalec):
     return round(int(stevec) / int(imenovalec) * 100)
-
-
-
 
 
 class Igra():
@@ -49,10 +46,9 @@ class Igra():
             for stolpec in range(velikost_plosce):
                 vrstica.append('.')
             self.plosca.append(vrstica)
-            #print(self.plosca)
 
         stevilo_postavljenih_ladij = 0
-        #print(self.plosca)
+
         indeks = 0
         while stevilo_postavljenih_ladij != stevilo_ladij:
             nakljucna_vrstica = random.randint(0, velikost_plosce - 1)
@@ -63,9 +59,6 @@ class Igra():
                 stevilo_postavljenih_ladij += 1
                 indeks += 1 
                    
-        
-
-
 
     def izpisi_plosco(self):
         # Izpise plosco z vrsticami A-J in stolpci 0-9
@@ -77,41 +70,32 @@ class Igra():
         y = []
 
         for vrstica in range(len(self.plosca)):
-            #print(abeceda[vrstica], end=') ')
             vrst = []
             x += str(abeceda[vrstica])
             vrst.append(abeceda[vrstica])
             for stolpec in range(len(self.plosca[vrstica])):
                 if self.plosca[vrstica][stolpec] == 'O':
                     if debug_mode:
-                        #print('.', end=' ')
                         x += '.'
                         vrst.append('.')
                     else:
-                        #print('.', end=' ')
                         vrst.append('.')
                         x += '.'
                 else:
-                    #print(self.plosca[vrstica][stolpec], end= ' ')
                     vrst.append(str(self.plosca[vrstica][stolpec]))
                     x += str(self.plosca[vrstica][stolpec])
-            #print('')
-            x += ' , ' #+ '\n'
+
+            x += ' , ' 
             y.append(vrst)
 
-        #print('  ', end= ' ')
         x += '  '
 
         st = ['/']
         for i in range(len(self.plosca[0])):
-            #print(str(i), end=' ')
             x+= str(i)
             st.append(str(i))
-        #print('')
         y.append(st)
-        a = np.array(y, dtype='object')
-        return x
-
+        return y
 
     def izstreli_strel(self, ugib):
         if self.sprejmi_veljavni_strel(ugib):
@@ -142,13 +126,14 @@ class Igra():
         else:
             return None
 
+
     def izpisi_strel(self):
         if self.zadnji_strel != None:
             strel = self.zadnji_strel.upper()
             vrstica = abeceda.find(strel[0])
             stolpec = int(strel[1]) 
             if self.plosca[vrstica][stolpec] == '#':
-                return "Zgresen strel, nobena ladja ni bila zadeta!"
+                return "Zgrešen strel, nobena ladja ni bila zadeta!"
             elif self.plosca[vrstica][stolpec] == 'X':
                 if self.preveri_potopljeno_ladjo(vrstica, stolpec):
                     return 'Zadetek, ladja je potopljena!'
@@ -158,27 +143,21 @@ class Igra():
             return ''
 
 
-
-
     def preveri_plosco_in_postavi_ladjo(self, zacetna_vrst, koncna_vrst, zacetni_stol, koncni_stol, smer, dolzina):
         # Preveri, ce lahko tam postavi ladjo 
         vse_velja = True
 
         if smer == 'levo' or smer == 'desno':
-#            if self.plosca[zacetna_vrst][zacetni_stol-1] == 'O' and self.plosca[koncna_vrst][koncni_stol+1] == 'O':
-#                vse_velja = False
 
             for vrstica in range(zacetna_vrst, koncna_vrst+1):
                 for stolpec in range(zacetni_stol, koncni_stol):
-                    if self.plosca[vrstica][stolpec] != '.': #and self.plosca[vrstica+1][stolpec] == 'O' and self.plosca[vrstica-1][stolpec] == 'O':
-                        vse_velja = False   #dodal da se ladjice ne morejo dotikat
+                    if self.plosca[vrstica][stolpec] != '.': 
+                        vse_velja = False   
                         break
         if smer == 'dol' or smer == 'gor':
-#            if self.plosca[zacetna_vrst-1][zacetni_stol] == 'O' and self.plosca[koncna_vrst+1][koncni_stol] == 'O':
-#                vse_velja = False
             for vrstica in range(zacetna_vrst, koncna_vrst):
                 for stolpec in range(zacetni_stol, koncni_stol+1):
-                    if self.plosca[vrstica][stolpec] != '.': #and self.plosca[vrstica][stolpec+1] == 'O' and self.plosca[vrstica][stolpec-1] == 'O':
+                    if self.plosca[vrstica][stolpec] != '.': 
                         vse_velja = False
                         break
 
@@ -195,8 +174,6 @@ class Igra():
                         self.plosca[vrstica][stolpec] = 'O'
 
         return vse_velja
-
-
 
 
     def poskusi_postavit_ladjo(self, vrstica, stolpec, smer, dolzina):
@@ -229,17 +206,12 @@ class Igra():
             koncni_stolpec = stolpec
             if vrstica + dolzina >= velikost_plosce:
                 return False
-#            if vrstica + dolzina +1 <= velikost_plosce and (self.plosca[zacetna_vrstica-1][zacetni_stolpec] != 'O' or self.plosca[koncna_vrstica+1][zacetni_stolpec] != 'O'):
-#                return False
-#            else:
-#                for stolpec in 
         return self.preveri_plosco_in_postavi_ladjo(zacetna_vrstica, koncna_vrstica, zacetni_stolpec, koncni_stolpec, smer, dolzina)
 
 
 
     def preveri_potopljeno_ladjo(self, vrstica, stolpec):
         # Preveri, ce so vsi deli ladje zadeti
-
         for pozicija in self.pozicija_ladij:
             zacetna_vrstica = pozicija[0]
             koncna_vrstica = pozicija[1]
@@ -307,13 +279,7 @@ class Igra():
             Z = 'Zmaga'
             self.stanje = W
             print(self.stanje)
-            return Z
-#        elif self.st_zadetih_strelov == 14:
-#            print('Cestitke, zmagali ste!')
-#            Z = 'Zmaga'
-#            self.stanje = W
-#            print(self.stanje)
-#            return Z            
+            return Z          
         elif self.st_preostalih_strelov <= 0:
             print('Zal ste izgubili! Zmanjkalo vam je strelov')
             P1 = 'Poraz1'
@@ -350,12 +316,9 @@ class Potapljanje_ladjic:
         self.nalozi_igre_iz_datoteke()
         igra = self.igre[id_igre]
         igra.preveri_konec_igre()
-#        poskus = igra.izstreli_strel(ugib)
+        igra.izstreli_strel(ugib)
         self.igre[id_igre] = (igra)
         self.zapisi_igre_v_datoteko()
-#        STATISTIKA = napisi_statistiko(self.datoteka_s_stanjem)
-        #self.napisi_statistiko()
-        #print(self.statistika)
 
 
     def nalozi_igre_iz_datoteke(self):
@@ -366,21 +329,17 @@ class Potapljanje_ladjic:
                 plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel, st_zadetih_strelov, natancost, stanje = self.preberi_podatke(igre, id_igre)
                 self.igre.update({int(id_igre[0]):
                  Igra(plosca,pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel, st_zadetih_strelov, natancost, stanje)})
-            #self.igre = {int(id_igre[0]): (Igra())
-                        #for id_igre in igre.items()}
             print(self.igre)
 
     def zapisi_igre_v_datoteko(self):
         with open(self.datoteka_s_stanjem, 'w', encoding='utf-8') as f:
-            #print(self.datoteka_s_stanjem)
-            #print(self.igre.items())
             igre = {id_igre: (igra.__dict__) 
                         for id_igre, igra in self.igre.items()}
             json.dump(igre, f)
 
 
     def preberi_podatke(self, datoteka, id_igre):
-        #print(datoteka)
+
         podatki_igre = datoteka.get(str(id_igre))
         plosca = podatki_igre.get('plosca')
         pozicija_ladij = podatki_igre.get('pozicija_ladij')
@@ -393,10 +352,9 @@ class Potapljanje_ladjic:
         stanje = podatki_igre.get('stanje')
         return plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel, st_zadetih_strelov, natancnost, stanje
 
-
     def nova_igra(self):
         #se enkrat zapisemo, da se zapisa zmaga ali poraz
-        #self.zapisi_igre_v_datoteko()
+        self.zapisi_igre_v_datoteko()
         print(napisi_statistiko(self.datoteka_s_stanjem))
         self.nalozi_igre_iz_datoteke()
         id_igre = self.prost_id_igre()
@@ -405,17 +363,6 @@ class Potapljanje_ladjic:
         self.zapisi_igre_v_datoteko()
         return id_igre
 
-
-    def napisi_statistiko(self):
-        with open(self.datoteka_s_stanjem, 'r', encoding='utf-8') as f:
-            igre = json.load(f)
-            st_zmag = 0
-            for id_igre in igre.keys():
-                _, _, st_preostalih_strelov, _,_, _, st_zadetih_strelov, natancost, stanje = self.preberi_podatke(igre, id_igre)
-                if stanje == 'Zmaga':
-                    st_zmag += 1
-                self.statistika['Odstotek zmag'] = odstotek(int(st_zmag),int(len(igre.keys())))
-                self.statistika['Odstotek zadetih strelov'] = odstotek(int(st_zadetih_strelov),int(40-st_preostalih_strelov))
 
 def napisi_statistiko(datoteka):
     statistika = {}
@@ -437,20 +384,16 @@ def napisi_statistiko(datoteka):
             if stanje == 'Zmaga':
                 st_zmag += 1
 
-        #Ne deli z 0 
+       #Ne deli z 0 
     print(natancnost_iger)  
     statistika['Odstotek zmag'] = 0
     statistika['Stevilo iger'] = st_iger
     statistika['Stevilo strelov'] = st_strelov  
     statistika['Stevilo zadetih strelov'] = st_zadetih_strelov
-    statistika['Najboljsa natancnost igre'] = 0
-    #statistika['Povprecna natancnost'] = 0   
+    statistika['Najboljsa natancnost igre'] = 0  
     if len(igre.keys()) != 0:
         statistika['Odstotek zmag'] = odstotek(st_zmag, st_iger)
-
         if len(natancnost_iger) != 0:
             statistika['Najboljsa natancnost igre'] = max(natancnost_iger)
-            #statistika['Povprecna natancnost'] = odstotek(st_zadetih_strelov, st_strelov)
-
     return statistika
 nova_igra()
