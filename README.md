@@ -1,4 +1,4 @@
-# Potapljanje_ladjic
+# Potapljanje ladjic
  Ta projekt je bil narjen pri predmetu Uvod v programiranje v sklopu 1. letnika Finančne matematike na Fakulteti za matematiko in fiziko v Ljubljani. Projekt predstavlja preprosto igro potapljanja ladjic, ki omogoča igranje enemu igralcu. Igralec ima omejeno število strelov in časa, da potopi vse računalnikove ladje različnih velikosti. Spletni vmesnik je narejen s pomočjo knjižnice bottle.
 
 
