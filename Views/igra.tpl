@@ -23,7 +23,7 @@
       <td>E</td><td>{{e[1]}}</td><td>{{e[2]}}</td><td>{{e[3]}}</td><td>{{e[4]}}</td><td>{{e[5]}}</td><td>{{e[6]}}</td><td>{{e[7]}}</td><td>{{e[8]}}</td><td>{{e[9]}}</td><td>{{e[10]}}</td>
     </tr>
     <tr>
-      <td>F</td><td>{{f[1]}}</td> <td>{{f[2]}}</td> <td>{{f[3]}}</td> <td>{{f[4]}}</td> <td>{{f[5]}}</td> <td>{{f[6]}}</td> <td>{{f[7]}}</td> <td>{{f[8]}}</td> <td>{{f[9]}}</td><td>{{f[10]}}</td>
+      <td>F</td><td>{{f[1]}}</td><td>{{f[2]}}</td><td>{{f[3]}}</td><td>{{f[4]}}</td><td>{{f[5]}}</td><td>{{f[6]}}</td><td>{{f[7]}}</td><td>{{f[8]}}</td><td>{{f[9]}}</td><td>{{f[10]}}</td>
     </tr>
     <tr>
       <td>G</td><td>{{g[1]}}</td><td>{{g[2]}}</td><td>{{g[3]}}</td><td>{{g[4]}}</td><td>{{g[5]}}</td><td>{{g[6]}}</td><td>{{g[7]}}</td><td>{{g[8]}}</td><td>{{g[9]}}</td><td>{{g[10]}}</td>
@@ -53,16 +53,9 @@
 
 
 <% if igra.preveri_konec_igre() == 'Zmaga': %>
-<div class='splash-container'>
-  <h1 class='splash-title'>ZMAGA</h1>
-<!--    <form action="/nova-igra/" method="post">
-      <button type="submit" class='btn splash-btn'>Nova igra</button>
-    </form>
-
-    <form action="/statistika/" method="get">
-      <button type="submit" class='btn splash-btn'>Ogled statistike preteklih iger</button>
-    </form>
---> <div>
+<div class='container'>
+  <h1 class='title'>ZMAGA</h1>
+    <div>
             <form action="/" method="get">
                 <button type="submit" class='btn splash-btn'>Zacetna stran</button>
             </form>
@@ -70,61 +63,46 @@
 </div>
 
 <% elif igra.preveri_konec_igre() == 'Poraz1': %>
-<div class='splash-container'>
-  <h1 class='splash-title'>PORAZ</h1>
+<div class='container'>
+  <h1 class='title'>PORAZ</h1>
     <h2>Zmanjkalo vam je strelov.</h2>
-<!--
-  <form action="/nova-igra/" method="post">
-    <button type="submit" class='btn splash-btn'>Nova igra</button>
-  </form>
-
-  <form action="/statistika/" method="get">
-    <button type="submit" class='btn splash-btn'>Ogled statistike preteklih iger</button>
-  </form>
---> <div>
-            <form action="/" method="get">
-                <button type="submit" class='btn splash-btn'>Zacetna stran</button>
-            </form>
+    <div>
+          <form action="/" method="get">
+            <button type="submit" class='btn splash-btn'>Zacetna stran</button>
+          </form>
     </div>
 </div>
 
 <% elif igra.preveri_konec_igre() == 'Poraz2': %>
-<div class='splash-container'>
-  <h1 class='splash-title'>PORAZ</h1>
+<div class='container'>
+  <h1 class='title'>PORAZ</h1>
     <h2>Zmanjkalo vam je časa.</h2>
-
-<!--  <form action="/nova-igra/" method="post">
-    <button type="submit" class='btn splash-btn'>Nova igra</button>
-  </form>
-
-  <form action="/statistika/" method="get">
-    <button type="submit" class='btn splash-btn'>Ogled statistike preteklih iger</button>
-  </form>
---> <div>
-            <form action="/" method="get">
-                <button type="submit" class='btn splash-btn'>Zacetna stran</button>
-            </form>
-
+    <div>
+          <form action="/" method="get">
+              <button type="submit" class='btn splash-btn'>Zacetna stran</button>
+          </form>
     </div>
     </div>
 <% else: %>
 
-      <h2 class='splash-izpis'>{{igra.izpisi_strel()}}</h2>
+      <h2 class='izpis'>{{igra.izpisi_strel()}}</h2>
 
-      <h2 class='splash-podatki'>Preostanek časa: {{round(180 - (time.time() - igra.cas))}} sekund</h2>
+      <h2 class='podatki'>Preostanek časa od zadnjega strela: {{round(180 - (time.time() - igra.cas))}} sekund</h2>
 
-      <h2 class='splash-podatki'>Število preostalih ladij: {{model.stevilo_ladij - igra.st_potopljenih_ladij}}</h2>
+      <h2 class='podatki'>Število preostalih ladij: {{model.stevilo_ladij - igra.st_potopljenih_ladij}}</h2>
 
-      <h2 class='splash-podatki'>Število preostalih strelov: {{igra.st_preostalih_strelov}}</h2>
+      <h2 class='podatki'>Število preostalih strelov: {{igra.st_preostalih_strelov}}</h2>
 
-      <h2 class='splash-podatki'>Število zadetih strelov: {{igra.st_zadetih_strelov}}</h2>
+      <h2 class='podatki'>Število zadetih strelov: {{igra.st_zadetih_strelov}}</h2>
 
-      <h2 class='splash-podatki'>Natančnost: {{igra.natancnost}} %</h2>
+      <h2 class='podatki'>Natančnost: {{igra.natancnost}} %</h2>
 </body>
+
   <form id = 'form' action='/igra/' method='post'>
-    <h2 class='splash-podatki'>Vnesi vrstico (A-J) in stolpec (0-9), primer B4:  
+    <h2 class='podatki'>Vnesi vrstico (A-J) in stolpec (0-9), primer B4:  
       <input type='text' name='lokacija' id='lokacija' maxlength='2' minlength='2' pattern='^[A-j]\d+$' required>
-      <button type="submit">Izstreli</button></h2>
+      <button type="submit">Izstreli</button>
+    </h2>
   </form>
 
 <% end %>

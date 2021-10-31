@@ -47,12 +47,7 @@ body {
     overflow-x: hidden;
 }
 
-*, *::before, *::after {
-    font-family: 'Montserrat', sans-serif;
-    box-sizing: border-box;
-}
-
-.splash-container {
+.container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -60,12 +55,12 @@ body {
     height: 66vh;
 }
 
-.splash-title {
+.title {
     font-family: 'Bangers', cursive;
     font-size: 8rem;
 }
 
-.splash-izpis {
+.izpis {
   font-family: 'Fantasy';
   font-size: 2rem;
   display: flex;
@@ -75,21 +70,21 @@ body {
   color: red;
 }
 
-.splash-podatki {
+.podatki {
   font-family: 'Fantasy';
   margin-left: 1%;
   font-size: 1.3rem;
   padding: 15px;
 }
 
-.splash-statistika {
+.statistika {
   font-family: 'Fantasy';
   left: 10vw;
   font-size: 2rem;
   padding: 20px;
 }
 
-.splash-battleship-image {
+.battleship-image {
   position: absolute;
   bottom: 5vh;
   left: 15vw;

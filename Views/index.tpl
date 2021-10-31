@@ -6,34 +6,26 @@
         <title>Potapljanje ladjic</title>
     </head>
     <body>
-        <div class='splash-container'>
-            <h1 class='splash-title'>Potapljanje ladjic</h1>
+        <div class='container'>
+            <h1 class='title'>Potapljanje ladjic</h1>
 
             <div>
-            <!--<form action="/registracija/" method="get">
-                <button type="submit" class='btn splash-btn'>Registracija</button>
+            <br>
+                <form action="/nova-igra/" method="post">
+                    <button type="submit" class='btn splash-btn'>Nova igra</button>
                 </form>
-            <br>
-            <form action="/prijava/" method="get">
-                <button type="submit" class='btn splash-btn'>Prijava</button>
-                </form>
-                -->
-            <br>
-            <form action="/nova-igra/" method="post">
-                <button type="submit" class='btn splash-btn'>Nova igra</button>
-            </form>
-            <br>
-            <br>
-            <form action="/statistika/" method="get">
-                <button type="submit" class='btn splash-btn'>Ogled statistike preteklih iger</button>
-            </form>
 
+                <br>
+                <br>
+                
+                <form action="/statistika/" method="get">
+                    <button type="submit" class='btn splash-btn'>Ogled statistike preteklih iger</button>
+                </form>
 
             </div>
         </div>
 
-        <img src='/img/battleship-large.svg' class='splash-battleship-image'>
+        <img src='/img/battleship-large.svg' class='battleship-image'>
     </body>
-
 
 </html>

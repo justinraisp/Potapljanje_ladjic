@@ -3,7 +3,6 @@ import json
 import time
 
 
-
 velikost_plosce = 10
 
 stevilo_ladij = 4
@@ -15,10 +14,8 @@ abeceda = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 datoteka_s_stanjem = 'stanje.json'
 
 
-
 def odstotek(stevec, imenovalec):
     return round(int(stevec) / int(imenovalec) * 100)
-
 
 class Igra():
 
@@ -33,8 +30,6 @@ class Igra():
         self.st_zadetih_strelov = st_zadetih_strelov
         self.natancnost = natancnost
         self.stanje = stanje
-
-
 
 
     def ustvari_plosco(self):
@@ -65,7 +60,6 @@ class Igra():
         global abeceda
         debug_mode = True
         abeceda = 'ABCDEFGHIJKLMNOP'
-        #abeceda = abeceda[0: len(self.plosca) + 1]
         x = ''
         y = []
 
@@ -98,31 +92,23 @@ class Igra():
         return y
 
     def izstreli_strel(self, ugib):
+        #print je uporabljeno za tekstovni vmesnik
         if self.sprejmi_veljavni_strel(ugib):
             lokacija = ugib.upper()
             vrstica = abeceda.find(lokacija[0])
             stolpec = int(lokacija[1])
-            print("")
-            print("----------------------------")
 
             if self.plosca[vrstica][stolpec] == ".":
-                print("Zgresen strel, nobena ladja ni bila zadeta")
                 self.plosca[vrstica][stolpec] = "#"
             elif self.plosca[vrstica][stolpec] == "O":
-                print("Zadetek!", end=" ")
                 self.plosca[vrstica][stolpec] = "X"
                 self.st_zadetih_strelov += 1
                 if self.preveri_potopljeno_ladjo(vrstica, stolpec):
-                    print("Ladja je potopljena!")
                     self.st_potopljenih_ladij += 1
-                else:
-                    print("Ladja je bila zadeta!")
-
             self.st_preostalih_strelov -= 1
             self.zadnji_strel = ugib
             st_strelov = 40 - int(self.st_preostalih_strelov)
-            self.natancnost = odstotek(self.st_zadetih_strelov, st_strelov)
-            
+            self.natancnost = odstotek(self.st_zadetih_strelov, st_strelov)            
         else:
             return None
 
@@ -233,6 +219,7 @@ class Igra():
 
     def sprejmi_veljavni_strel(self, lokacija):
         # Pridobi veljavno vrstico in stolpec za strel
+        # Print nam izpisuje za tekstovni vmesnik, preko spleta so omejitve za strel
         je_veljavno = False
         vrstica = -1
         stolpec = -1
@@ -275,18 +262,14 @@ class Igra():
         W = 'Zmaga'
 
         if self.st_potopljenih_ladij == stevilo_ladij:
-            print('Cestitke, zmagali ste!')
             Z = 'Zmaga'
             self.stanje = W
-            print(self.stanje)
             return Z          
         elif self.st_preostalih_strelov <= 0:
-            print('Zal ste izgubili! Zmanjkalo vam je strelov')
             P1 = 'Poraz1'
             self.stanje = L
             return P1
         elif int(time.time()) - int(self.cas) > 180:
-            print('Zal ste izgubili, zmanjkalo vam je casa')
             P2 = 'Poraz2'
             self.stanje = L
             return P2
@@ -324,12 +307,12 @@ class Potapljanje_ladjic:
     def nalozi_igre_iz_datoteke(self):
         with open(self.datoteka_s_stanjem, 'r', encoding='utf-8') as f:
             igre = json.load(f)
-            print(igre)
+            #print(igre)
             for id_igre in igre.keys():
                 plosca, pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel, st_zadetih_strelov, natancost, stanje = self.preberi_podatke(igre, id_igre)
                 self.igre.update({int(id_igre[0]):
                  Igra(plosca,pozicija_ladij, st_preostalih_strelov, st_potopljenih_ladij, zacetni_cas, zadnji_strel, st_zadetih_strelov, natancost, stanje)})
-            print(self.igre)
+            #print(self.igre)
 
     def zapisi_igre_v_datoteko(self):
         with open(self.datoteka_s_stanjem, 'w', encoding='utf-8') as f:
@@ -355,7 +338,7 @@ class Potapljanje_ladjic:
     def nova_igra(self):
         #se enkrat zapisemo, da se zapisa zmaga ali poraz
         self.zapisi_igre_v_datoteko()
-        print(napisi_statistiko(self.datoteka_s_stanjem))
+        #print(napisi_statistiko(self.datoteka_s_stanjem))
         self.nalozi_igre_iz_datoteke()
         id_igre = self.prost_id_igre()
         igra = nova_igra()
@@ -383,9 +366,7 @@ def napisi_statistiko(datoteka):
                 natancnost_iger.append(int(natancnost))
             if stanje == 'Zmaga':
                 st_zmag += 1
-
-       #Ne deli z 0 
-    print(natancnost_iger)  
+  
     statistika['Odstotek zmag'] = 0
     statistika['Stevilo iger'] = st_iger
     statistika['Stevilo strelov'] = st_strelov  
